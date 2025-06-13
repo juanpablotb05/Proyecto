@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+	background: #f6f5f7;
+    margin-top: 60px;
+    height: calc(100vh - 50px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+html, #root {
+    margin: 0;
+    padding: 0;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+} 
+/*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;/*/
