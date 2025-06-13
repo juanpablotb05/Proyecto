@@ -1,11 +1,10 @@
 import React, { useState, useRef } from "react";
 import "./Login.css";
 import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [isRightPanelActive, setRightPanelActive] = useState(false);
-  const [usuarios, setUsuarios] = useState([]);
-  const [contrasenas, setContrasenas] = useState([]);
   const [intentos, setIntentos] = useState(3);
   const [mensaje, setMensaje] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState("Usuario");
@@ -24,11 +23,11 @@ const Login = () => {
     const passwordNew = passRef.current.value.trim();
     if (!usuarioNew || !passwordNew) return;
 
-    setUsuarios((prev) => [...prev, usuarioNew]);
-    setContrasenas((prev) => [...prev, passwordNew]);
+    // Aquí podrías llamar a una API de registro si se requiere.
 
     userRef.current.value = "";
     passRef.current.value = "";
+    alert("Usuario registrado (solo local)");
   };
 
   const loginAction = (e) => {
@@ -38,50 +37,48 @@ const Login = () => {
     const usuarioLog = userLogRef.current.value.trim();
     const passwordLog = passLogRef.current.value.trim();
 
-    const userIndex = usuarios.indexOf(usuarioLog);
-    const isMatch = userIndex !== -1 && contrasenas[userIndex] === passwordLog;
+    const loginData = {
+      email: usuarioLog,
+      password: passwordLog,
+    };
 
-    if (isMatch) {
-      const loginData = {
-        usuario: usuarioLog,
-        contrasena: passwordLog,
-        tipo: tipoUsuario,
-      };
-
-      fetch("", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
+    fetch("http://localhost:8080/api/login", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Error de autenticación");
+        return res.json();
       })
-        .then((res) => {
-          if (!res.ok) throw new Error("Error de autenticación");
-          return res.json();
-        })
-        .then((data) => {
-          console.log("Respuesta del servidor:", data);
-          alert("Bienvenido: " + usuarioLog);
-          setIntentos(3);
-          setMensaje("");
-        })
-        .catch((err) => {
-          console.error(err);
-          setMensaje("Fallo la conexión o credenciales inválidas.");
-        });
-    } else {
-      const nuevosIntentos = intentos - 1;
-      setIntentos(nuevosIntentos);
+      .then((data) => {
+      const token = data.accessToken; // Ajusta si tu backend devuelve otro campo
+      const tokenData = jwtDecode(token); // ← CORREGIDO
 
-      if (nuevosIntentos > 0) {
-        setMensaje(`Usuario o contraseña incorrectos. Te quedan: ${nuevosIntentos} intentos.`);
-      } else {
-        alert("Número máximo de intentos alcanzado.");
-        botonRef.current.style.display = "none";
-        userLogRef.current.disabled = true;
-        passLogRef.current.disabled = true;
-      }
-    }
+      localStorage.token = token;
+      localStorage.email = tokenData.sub;
+      localStorage.nombre = tokenData.name || "Sin nombre";
+
+      alert("Bienvenido: " + usuarioLog);
+      setIntentos(3);
+      setMensaje("");
+      })
+      .catch((err) => {
+        console.error(err);
+        const nuevosIntentos = intentos - 1;
+        setIntentos(nuevosIntentos);
+        if (nuevosIntentos > 0) {
+          setMensaje(`Credenciales inválidas. Te quedan: ${nuevosIntentos} intentos.`);
+        } else {
+          alert("Número máximo de intentos alcanzado.");
+          botonRef.current.style.display = "none";
+          userLogRef.current.disabled = true;
+          passLogRef.current.disabled = true;
+        }
+      });
 
     userLogRef.current.value = "";
     passLogRef.current.value = "";
@@ -162,5 +159,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
