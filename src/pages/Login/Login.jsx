@@ -58,9 +58,9 @@ const Login = () => {
       const token = data.accessToken; // Ajusta si tu backend devuelve otro campo
       const tokenData = jwtDecode(token); // ← CORREGIDO
 
-      localStorage.token = token;
-      localStorage.email = tokenData.sub;
-      localStorage.nombre = tokenData.name || "Sin nombre";
+      sessionStorage.token = token;
+      sessionStorage.email = tokenData.sub;
+      sessionStorage.nombre = tokenData.name || "Sin nombre";
 
       alert("Bienvenido: " + usuarioLog);
       setIntentos(3);
