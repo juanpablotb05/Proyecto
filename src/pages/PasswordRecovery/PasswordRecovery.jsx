@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './PasswordRecovery.css'; // Importa el archivo CSS
+import logo from '../../assets/ENVIFO.png';
 
 const PasswordRecovery = () => {
   const [codigoVerificacion, setCodigoVerificacion] = useState('');
@@ -26,10 +27,12 @@ const PasswordRecovery = () => {
         <div className="contenedor-logo">
           {/* Asumiendo que tienes un SVG o una imagen para el logo */}
           {/* **¡Importante!** Reemplaza "ruta/a/tu/logo.png" con la ruta real de tu logo */}
-          <img src="./assets/ENVIFO.png" alt="Logo de ENVIFO" className="logo" />
-        </div>
-        <button className="boton-atras">
-          <span className="flecha">←</span> atrás
+           <div className="logo-section">
+            <img src={logo} alt="Envifo Logo" className="logo" />
+          </div>
+      </div>
+       <button className="boton-atras" onClick={() => window.history.back()}>
+        <span className="flecha">←</span> atrás
         </button>
       </div>
 

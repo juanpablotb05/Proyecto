@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './ForgotPassword.css'; 
 import { useNavigate } from 'react-router-dom';
+import logo from '../../assets/ENVIFO.png';
+
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -26,7 +28,7 @@ const ForgotPassword = () => {
   return (
     <div className="forgot-password-container">
       <div className="logo-section">
-        <img src="./assets/ENVIFO.png" alt="Envifo Logo" className="logo" />
+        <img src={logo} alt="Envifo Logo" className="logo" />
       </div>
 
       <div className="content-section">
