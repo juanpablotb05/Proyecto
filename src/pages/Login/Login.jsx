@@ -15,6 +15,37 @@ const Login = () => {
   const passLogRef = useRef(null);
   const botonRef = useRef(null);
 
+  // Nuevos estados para atributos adicionales
+  const [formData, setFormData] = useState({
+    // Comunes
+    userName: "",
+    password: "",
+    // Usuario
+    firstName: "",
+    middleName: "",
+    firstSurname: "",
+    secondSurname: "",
+    age: "",
+    phone: "",
+    email: "",
+    state: false,
+    // Empresa
+    name: "",
+    address: "",
+    phoneCompany: "",
+    emailCompany: "",
+    url: "",
+    stateCustomer: false,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
   const handleSignUp = () => setRightPanelActive(true);
   const handleSignIn = () => setRightPanelActive(false);
 
@@ -90,8 +121,45 @@ const Login = () => {
       <div className="form-container sign-up-container">
         <form>
           <h1>Crear cuenta</h1>
-          <input type="text" ref={userRef} placeholder="Nombre" />
-          <input type="password" ref={passRef} placeholder="Contraseña" />
+          <div className="tipo-usuario-btn-group">
+            <button
+              type="button"
+              className={`tipo-usuario-btn ${tipoUsuario === "Usuario" ? "active" : ""}`}
+              onClick={() => setTipoUsuario("Usuario")}
+            >
+              Usuario
+            </button>
+            <button
+              type="button"
+              className={`tipo-usuario-btn ${tipoUsuario === "Empresa" ? "active" : ""}`}
+              onClick={() => setTipoUsuario("Empresa")}
+            >
+              Empresa
+            </button>
+          </div>
+        
+          {/* Usuario */}
+          {tipoUsuario === "Usuario" && (
+            <>
+              <input type="text" name="Nombre" placeholder="Nombre" onChange={handleInputChange} />
+              <input type="text" name="Lastname" placeholder="Apellido" onChange={handleInputChange} />
+              <input type="email" name="email" placeholder="Correo electrónico" onChange={handleInputChange} />
+              <input type="password" ref={passRef} placeholder="Contraseña" name="password" onChange={handleInputChange} />
+            </>
+          )}
+
+          {/* Empresa */}
+          {tipoUsuario === "Empresa" && (
+            <>
+              <input type="text" name="name" placeholder="Nombre empresa" onChange={handleInputChange} />
+              <input type="text" name="address" placeholder="Dirección" onChange={handleInputChange} />
+              <input type="text" name="phoneCompany" placeholder="Teléfono empresa" onChange={handleInputChange} />
+              <input type="email" name="emailCompany" placeholder="Correo electrónico empresa" onChange={handleInputChange} />
+
+              <input type="password" ref={passRef} placeholder="Contraseña" name="password" onChange={handleInputChange} />
+            </>
+          )}
+
           <button type="button" className="button" onClick={registrarUsuario}>
             Registrar
           </button>
@@ -104,30 +172,26 @@ const Login = () => {
           <h1>Iniciar sesión</h1>
           <div className="radio-group-container">
             <div className="radio-group">
-              <label>
-                <input
-                  type="radio"
-                  name="tipoUsuario"
-                  value="Usuario"
-                  checked={tipoUsuario === "Usuario"}
-                  onChange={() => setTipoUsuario("Usuario")}
-                />{" "}
-                Usuario
-              </label>
-              <label style={{ marginLeft: "20px" }}>
-                <input
-                  type="radio"
-                  name="tipoUsuario"
-                  value="Empresa"
-                  checked={tipoUsuario === "Empresa"}
-                  onChange={() => setTipoUsuario("Empresa")}
-                />{" "}
-                Empresa
-              </label>
+              <div className="tipo-usuario-btn-group">
+                <button
+                  type="button"
+                  className={`tipo-usuario-btn ${tipoUsuario === "Usuario" ? "active" : ""}`}
+                  onClick={() => setTipoUsuario("Usuario")}
+                >
+                  Usuario
+                </button>
+                <button
+                  type="button"
+                  className={`tipo-usuario-btn ${tipoUsuario === "Empresa" ? "active" : ""}`}
+                  onClick={() => setTipoUsuario("Empresa")}
+                >
+                  Empresa
+                </button>
+              </div>
             </div>
           </div>
-          <input type="text" ref={userLogRef} placeholder="Nombre" />
-          <input type="password" ref={passLogRef} placeholder="Contraseña" />
+          <input type="email" ref={userLogRef} placeholder="Email" />
+          <input type="password" ref={passLogRef} placeholder="Password" />
           <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
           <button type="submit" className="button" ref={botonRef}>
             Login
@@ -136,6 +200,7 @@ const Login = () => {
         </form>
       </div>
 
+      {/* OVERLAY */}
       <div className="overlay-container">
         <div className="overlay">
           <div className="overlay-panel overlay-left">

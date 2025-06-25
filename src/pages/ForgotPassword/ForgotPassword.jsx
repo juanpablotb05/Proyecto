@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './ForgotPassword.css'; 
 import { useNavigate } from 'react-router-dom';
+import logo from '../../assets/ENVIFO.png';
+
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -23,10 +25,29 @@ const ForgotPassword = () => {
     navigate('/password-recovery');
   };
 
+const forgotAction = (e) => {
+  e.preventDefault();
+  const emailForgot = email.trim();
+
+  fetch(`http://localhost:8080/api/recuperacion/solicitar?email=${encodeURIComponent(emailForgot)}`, {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+    },
+  }).then((data) => {
+      handleContinue();
+    })
+    .catch((err) => {
+      console.error(err);
+      setMensaje(`Correo inválido.`);
+    });
+};
+
   return (
     <div className="forgot-password-container">
       <div className="logo-section">
-        <img src="./assets/ENVIFO.png" alt="Envifo Logo" className="logo" />
+        <img src={logo} alt="Envifo Logo" className="logo" />
       </div>
 
       <div className="content-section">
@@ -46,8 +67,8 @@ const ForgotPassword = () => {
         </div>
         <button
           className="continue-button"
-          onClick={handleContinue}
           disabled={!isValidEmail}
+          onClick={forgotAction}
           style={{
             backgroundColor: isValidEmail ? '#ff6600' : '#ccc',
             cursor: isValidEmail ? 'pointer' : 'not-allowed'
