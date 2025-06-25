@@ -150,10 +150,8 @@ const Login = () => {
           {/* Usuario */}
           {tipoUsuario === "Usuario" && (
             <>
-              <input type="text" name="Names" placeholder="Nombres" onChange={handleInputChange} />
-              <input type="text" name="Lastname" placeholder="Apellidos" onChange={handleInputChange} />
-              <input type="number" name="age" placeholder="Edad" onChange={handleInputChange} />
-              <input type="text" name="phone" placeholder="Teléfono" onChange={handleInputChange} />
+              <input type="text" name="Nombre" placeholder="Nombre" onChange={handleInputChange} />
+              <input type="text" name="Lastname" placeholder="Apellido" onChange={handleInputChange} />
               <input type="email" name="email" placeholder="Correo electrónico" onChange={handleInputChange} />
               <input type="password" ref={passRef} placeholder="Contraseña" name="password" onChange={handleInputChange} />
             </>
@@ -166,7 +164,7 @@ const Login = () => {
               <input type="text" name="address" placeholder="Dirección" onChange={handleInputChange} />
               <input type="text" name="phoneCompany" placeholder="Teléfono empresa" onChange={handleInputChange} />
               <input type="email" name="emailCompany" placeholder="Correo electrónico empresa" onChange={handleInputChange} />
-              <input type="url" name="url" placeholder="URL sitio web" onChange={handleInputChange} />
+
               <input type="password" ref={passRef} placeholder="Contraseña" name="password" onChange={handleInputChange} />
             </>
           )}
@@ -201,8 +199,8 @@ const Login = () => {
               </div>
             </div>
           </div>
-          <input type="text" ref={userLogRef} placeholder="Nombre" />
-          <input type="password" ref={passLogRef} placeholder="Contraseña" />
+          <input type="email" ref={userLogRef} placeholder="Email" />
+          <input type="password" ref={passLogRef} placeholder="Password" />
           <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
           <button type="submit" className="button" ref={botonRef}>
             Login

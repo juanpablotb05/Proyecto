@@ -85,15 +85,15 @@ input:focus {
               0 10px 10px rgba(0, 0, 0, 0.22);
   position: relative;
   overflow: hidden;
-  width: 850px; /* aumentamos el ancho */
+  width: 650px; /* aumentamos el ancho */
   max-width: 100%;
-  min-height: 600px; /* aumentamos la altura */
+  min-height: 500px; /* aumentamos la altura */
 }
 
 .form-container form {
-  overflow-y: auto;
-  max-height: 90%;
   padding: 20px 50px;
+  height: 100%;
+  overflow: hidden; /* Oculta cualquier posible scroll */
 }
 
 .sign-up-container {
