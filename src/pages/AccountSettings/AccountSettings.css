@@ -1,0 +1,91 @@
+.account-settings-container {
+  display: flex;
+  margin-top: 70px; /* Asegura que quede debajo del navbar */
+  padding: 20px;
+}
+
+.sidebar {
+  width: 250px;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.profile-section {
+  text-align: center;
+}
+
+.profile-image-circle {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background-color: #ddd;
+  overflow: hidden;
+  display: flex;
+  align-items:center;
+  justify-content: center;
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-image {
+  color: #777;
+  font-size: 14px;
+}
+
+.view-profile-link {
+  display: block;
+  color: #ff6600;
+  margin-top: 5px;
+  text-decoration: none;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.account-header h2 {
+  margin-bottom: 20px;
+}
+
+.account-form .form-group {
+  margin-bottom: 15px;
+}
+
+.account-form input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.update-button {
+  background-color: #ff6600;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alinea a la izquierda */
+  max-width: 400px; /* Limita el ancho del formulario */
+}
+
+.account-form label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+}

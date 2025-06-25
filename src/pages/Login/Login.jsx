@@ -54,11 +54,17 @@ const Login = () => {
     const passwordNew = passRef.current.value.trim();
     if (!usuarioNew || !passwordNew) return;
 
-    // Aquí podrías llamar a una API de registro si se requiere.
+    setUsuarios((prev) => [...prev, usuarioNew]);
+    setContrasenas((prev) => [...prev, passwordNew]);
+
+    console.log("Datos registrados:", {
+      tipo: tipoUsuario,
+      ...formData,
+    });
 
     userRef.current.value = "";
     passRef.current.value = "";
-    alert("Usuario registrado (solo local)");
+    setFormData({ ...formData, password: "", userName: "" });
   };
 
   const loginAction = (e) => {
@@ -224,3 +230,6 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
