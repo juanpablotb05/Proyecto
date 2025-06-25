@@ -22,11 +22,11 @@ const ForgotPassword = () => {
 
   const handleContinue = () => {
     console.log('Correo electrónico ingresado:', email);
+    localStorage.setItem('emailRecuperacion', email);
     navigate('/password-recovery');
   };
 
-const forgotAction = (e) => {
-  e.preventDefault();
+const forgotAction = () => {
   const emailForgot = email.trim();
 
   fetch(`http://localhost:8080/api/recuperacion/solicitar?email=${encodeURIComponent(emailForgot)}`, {
@@ -47,7 +47,7 @@ const forgotAction = (e) => {
   return (
     <div className="forgot-password-container">
       <div className="logo-section">
-        <img src={logo} alt="Envifo Logo" className="logo" />
+        <img src={logo} alt="Envifo Logo" className="logo" onClick={() => navigate('/')}/>
       </div>
 
       <div className="content-section">
