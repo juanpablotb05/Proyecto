@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import './RestablecerPassword.css';
+import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/ENVIFO.png';
 
 const PasswordRecovery = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,7 +25,7 @@ const PasswordRecovery = () => {
     <div className="Recuperar-password-container">
     <div className="contenedor-recuperacion">
       <div className="logo-cabecera">
-        <img src={logo} alt="Envifo Logo" className="logo" />
+        <img src={logo} alt="Envifo Logo" className="logo" onClick={() => navigate('/')}/>
         <h1>Restablecer contraseña</h1>
         <p>Introduce tu nueva contraseña</p>
       </div>
