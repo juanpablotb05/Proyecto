@@ -1,13 +1,7 @@
-const Layout = ({children}) => {
+export const Layout = ({children}) =>{
     return (
-        <div className="flex flex-col w-[100%] h-[100vh]">
-            <div className="flex flex-col w-[100%] flex-1">
-                {children}
-            </div>
-            <div className="flex flex-col w-[100%] h-[10vh] bg-gradient-to-t from-[#ed7304] to-[#ffff]">
-            </div>
+        <div className="m-0 p-0 box-border flex justify-center items-center min-h-screen  bg-gradient-to-r from-orange-400 to-[#F0f0f0]">
+            {children}
         </div>
     )
 }
-
-export { Layout }

@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import "./Login.css";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { Layout } from "../../components/Layout";
 
 const Login = () => {
   const [isRightPanelActive, setRightPanelActive] = useState(false);
@@ -122,6 +123,7 @@ const Login = () => {
   };
 
   return (
+    <Layout>
     <div className={`container ${isRightPanelActive ? "right-panel-active" : ""}`}>
       {/* REGISTRO */}
       <div className="form-container sign-up-container">
@@ -151,6 +153,7 @@ const Login = () => {
               <input type="text" name="Lastname" placeholder="Apellido" onChange={handleInputChange} />
               <input type="email" name="email" placeholder="Correo electrónico" onChange={handleInputChange} />
               <input type="password" ref={passRef} placeholder="Contraseña" name="password" onChange={handleInputChange} />
+              <button type="button" className="button" onClick={registrarUsuario}>Registrar</button>
             </>
           )}
 
@@ -161,14 +164,10 @@ const Login = () => {
               <input type="text" name="address" placeholder="Dirección" onChange={handleInputChange} />
               <input type="text" name="phoneCompany" placeholder="Teléfono empresa" onChange={handleInputChange} />
               <input type="email" name="emailCompany" placeholder="Correo electrónico empresa" onChange={handleInputChange} />
-
               <input type="password" ref={passRef} placeholder="Contraseña" name="password" onChange={handleInputChange} />
+              <button type="button" className="button" onClick={registrarUsuario}>Registrar</button>
             </>
           )}
-
-          <button type="button" className="button" onClick={registrarUsuario}>
-            Registrar
-          </button>
         </form>
       </div>
 
@@ -199,9 +198,7 @@ const Login = () => {
           <input type="email" ref={userLogRef} placeholder="Email" />
           <input type="password" ref={passLogRef} placeholder="Password" />
           <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
-          <button type="submit" className="button" ref={botonRef}>
-            Login
-          </button>
+          <button type="submit" className="button" ref={botonRef}>Login</button>
           <p className="mensaje-error">{mensaje}</p>
         </form>
       </div>
@@ -226,6 +223,7 @@ const Login = () => {
         </div>
       </div>
     </div>
+    </Layout>
   );
 };
 
