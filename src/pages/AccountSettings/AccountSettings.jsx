@@ -9,7 +9,10 @@ const AccountSettings = () => {
     email: '',
   });
 
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(null); // para vista previa
+  const [selectedFile, setSelectedFile] = useState(null); // para enviar al backend
+  const [imageButtonLabel, setImageButtonLabel] = useState("Seleccionar");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -19,8 +22,56 @@ const AccountSettings = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setSelectedFile(file);
       setImage(URL.createObjectURL(file));
+      setImageButtonLabel("Confirmar");
     }
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedFile) return;
+
+    const idUsuario = sessionStorage.getItem("usuario"); 
+    const token = sessionStorage.getItem("token");
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    setIsUploading(true);
+
+    try {
+  const response = await fetch(`http://localhost:8080/api/user/save/imagen/${idUsuario}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    alert("Imagen subida con éxito.");
+
+    // Limpia el input file (opcional)
+    if (window.fileInputRef) {
+      window.fileInputRef.value = null;
+    }
+
+    setImageButtonLabel("Seleccionar");
+    setSelectedFile(null);
+    // NO BORRAR la imagen para mantener la vista previa
+    // setImage(null); ← NO hacer esto
+  } else {
+    const errorText = await response.text();
+    console.log(`Error al subir la imagen: ${errorText}`);
+  }
+} catch (error) {
+  console.log("Error de red al subir la imagen.");
+  console.error(error);
+}finally {
+    setIsUploading(false); // ✅ Esto asegura que el botón vuelva a su estado normal
+  }
+
   };
 
   const handleSubmit = (e) => {
@@ -39,7 +90,30 @@ const AccountSettings = () => {
               <div className="no-image">Sin imagen</div>
             )}
           </div>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <div className="file-upload-container">
+  <input
+    type="file"
+    accept="image/*"
+    style={{ display: 'none' }}
+    ref={(ref) => (window.fileInputRef = ref)}
+    onChange={handleImageChange}
+  />
+  <button
+    className="file-select"
+    onClick={(e) => {
+      e.preventDefault();
+      if (!selectedFile) {
+        window.fileInputRef.click(); // abrir selector de archivos
+      } else {
+        handleUploadImage(); // subir imagen si ya fue seleccionada
+      }
+    }}
+    disabled={isUploading}
+  >
+    {isUploading ? "Subiendo..." : selectedFile ? "Confirmar" : "Seleccionar"}
+  </button>
+</div>
+
           <div className="profile-name">{formData.name || 'Usuario'}</div>
           <a href="#" className="view-profile-link">Ver el perfil</a>
         </div>
@@ -98,4 +172,3 @@ const AccountSettings = () => {
 };
 
 export default AccountSettings;
-

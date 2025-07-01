@@ -1,14 +1,15 @@
 import React, { useState, useRef } from "react";
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import logo from '../../assets/ENVIFO.png';
 
 const Login = () => {
   const [isRightPanelActive, setRightPanelActive] = useState(false);
   const [intentos, setIntentos] = useState(3);
   const [mensaje, setMensaje] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState("Usuario");
-
+  const navigate = useNavigate();
   const userRef = useRef(null);
   const passRef = useRef(null);
   const userLogRef = useRef(null);
@@ -74,15 +75,28 @@ const Login = () => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(registerData),
-  }).then((res) => {
-  if (!res.ok) throw new Error("Error al registrar usuario");
-  return res.text(); // ⬅️ Cambiado de .json() a .text()
-})
-.then((msg) => {
-  console.log("Mensaje recibido:", msg); // "User register success!"
-});
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Error al registrar usuario");
+      return res.text();
+    })
+    .then((msg) => {
+      console.log("Mensaje recibido:", msg);
+      alert("Usuario registrado con éxito");
+      setRightPanelActive(false); // Cambia al panel de login
 
+      // Limpiar campos
+      nameUserRef.current.value = "";
+      lastNameUserRef.current.value = "";
+      emailUserRef.current.value = "";
+      passUserRef.current.value = "";
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Hubo un problema al registrar el usuario.");
+    });
 };
+
 
 
   const loginAction = (e) => {
@@ -117,6 +131,8 @@ const Login = () => {
       sessionStorage.token = token;
       sessionStorage.email = tokenData.sub;
       sessionStorage.nombre = tokenData.name || "Sin nombre";
+      sessionStorage.permiso = tokenData.idPermiso;
+      sessionStorage.usuario = tokenData.idUsuario;
 
       alert("Bienvenido: " + usuarioLog);
       setIntentos(3);
@@ -234,13 +250,18 @@ const Login = () => {
       <div className="overlay-container">
         <div className="overlay">
           <div className="overlay-panel overlay-left">
-            <h1>ENVIFO!</h1>
+              <div className="logo-section">
+                <img src={logo} alt="Envifo Logo" className="logo" onClick={() => navigate('/')}/>
+              </div>
             <p>Para ingresar, inicie sesión con su información.</p>
             <button className="ghost" onClick={handleSignIn}>
               Login
             </button>
           </div>
           <div className="overlay-panel overlay-right">
+            <div className="logo-section">
+                <img src={logo} alt="Envifo Logo" className="logo" onClick={() => navigate('/')}/>
+              </div>
             <h1>¡Bienvenido!</h1>
             <p>Registre su información para ingresar al aplicativo.</p>
             <button className="ghost" onClick={handleSignUp}>
