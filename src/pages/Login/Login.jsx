@@ -14,6 +14,11 @@ const Login = () => {
   const userLogRef = useRef(null);
   const passLogRef = useRef(null);
   const botonRef = useRef(null);
+  const nameUserRef = useRef(null);
+  const lastNameUserRef = useRef(null);
+  const emailUserRef = useRef(null);
+  const passUserRef = useRef(null);
+
 
   // Nuevos estados para atributos adicionales
   const [formData, setFormData] = useState({
@@ -49,23 +54,36 @@ const Login = () => {
   const handleSignUp = () => setRightPanelActive(true);
   const handleSignIn = () => setRightPanelActive(false);
 
-  const registrarUsuario = () => {
-    const usuarioNew = userRef.current.value.trim();
-    const passwordNew = passRef.current.value.trim();
-    if (!usuarioNew || !passwordNew) return;
+ const registrarUsuario = () => {
+  const name = nameUserRef.current.value.trim();
+  const surName = lastNameUserRef.current.value.trim();
+  const emailReg = emailUserRef.current.value.trim();
+  const passwordReg = passUserRef.current.value.trim();
 
-    setUsuarios((prev) => [...prev, usuarioNew]);
-    setContrasenas((prev) => [...prev, passwordNew]);
-
-    console.log("Datos registrados:", {
-      tipo: tipoUsuario,
-      ...formData,
-    });
-
-    userRef.current.value = "";
-    passRef.current.value = "";
-    setFormData({ ...formData, password: "", userName: "" });
+  const registerData = {
+    firstName: name,
+    firstSurname: surName,
+    email: emailReg,
+    password: passwordReg,
   };
+
+  fetch("http://localhost:8080/api/register", {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(registerData),
+  }).then((res) => {
+  if (!res.ok) throw new Error("Error al registrar usuario");
+  return res.text(); // ⬅️ Cambiado de .json() a .text()
+})
+.then((msg) => {
+  console.log("Mensaje recibido:", msg); // "User register success!"
+});
+
+};
+
 
   const loginAction = (e) => {
     e.preventDefault();
@@ -77,6 +95,7 @@ const Login = () => {
     const loginData = {
       email: usuarioLog,
       password: passwordLog,
+
     };
 
     fetch("http://localhost:8080/api/login", {
@@ -147,10 +166,13 @@ const Login = () => {
           {/* Usuario */}
           {tipoUsuario === "Usuario" && (
             <>
-              <input type="text" name="Nombre" placeholder="Nombre" onChange={handleInputChange} />
-              <input type="text" name="Lastname" placeholder="Apellido" onChange={handleInputChange} />
-              <input type="email" name="email" placeholder="Correo electrónico" onChange={handleInputChange} />
-              <input type="password" ref={passRef} placeholder="Contraseña" name="password" onChange={handleInputChange} />
+              <input type="text" name="Nombre" ref={nameUserRef} placeholder="Nombre" onChange={handleInputChange} />
+              <input type="text" name="Lastname" ref={lastNameUserRef} placeholder="Apellido" onChange={handleInputChange} />
+              <input type="email" name="email" ref={emailUserRef} placeholder="Correo electrónico" onChange={handleInputChange} />
+              <input type="password" ref={passUserRef} placeholder="Contraseña" name="password" onChange={handleInputChange} />
+              <button type="button" className="button" onClick={registrarUsuario}>
+              Registrar
+              </button>
             </>
           )}
 
@@ -160,15 +182,17 @@ const Login = () => {
               <input type="text" name="name" placeholder="Nombre empresa" onChange={handleInputChange} />
               <input type="text" name="address" placeholder="Dirección" onChange={handleInputChange} />
               <input type="text" name="phoneCompany" placeholder="Teléfono empresa" onChange={handleInputChange} />
-              <input type="email" name="emailCompany" placeholder="Correo electrónico empresa" onChange={handleInputChange} />
+              <input type="email" name="emailCompany" ref={userRef} placeholder="Correo electrónico empresa" onChange={handleInputChange} />
 
               <input type="password" ref={passRef} placeholder="Contraseña" name="password" onChange={handleInputChange} />
-            </>
-          )}
-
+              
           <button type="button" className="button" onClick={registrarUsuario}>
             Registrar
           </button>
+            </>
+          )}
+
+
         </form>
       </div>
 

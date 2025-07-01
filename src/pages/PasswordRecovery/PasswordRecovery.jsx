@@ -45,6 +45,7 @@ const PasswordRecovery = () => {
         return res.text();
       })
       .then((data) => {
+        sessionStorage.token = token;
         navigate('/RestablecerPassword');
       })
       .catch((err) => {
