@@ -68,7 +68,7 @@ const Login = () => {
     password: passwordReg,
   };
 
-  fetch("http://localhost:8080/api/register", {
+  fetch("http://localhost:8080/api/registerUser", {
     method: "POST",
     headers: {
       "Accept": "application/json",
