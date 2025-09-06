@@ -66,60 +66,85 @@ const Login = () => {
       });
   };
 
-  const loginAction = (e) => {
+  const loginAction = async (e) => {
     e.preventDefault();
     if (intentos <= 0) return;
 
-    const usuarioLog = userLogRef.current.value.trim();
-    const passwordLog = passLogRef.current.value.trim();
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      setMensaje('Sin conexión. Por favor verifica tu red.');
+      return;
+    }
+
+    const usuarioLog = (userLogRef.current && userLogRef.current.value || '').trim();
+    const passwordLog = (passLogRef.current && passLogRef.current.value || '').trim();
 
     const loginData = {
       email: usuarioLog,
       password: passwordLog,
     };
 
-    fetch("https://envifo-java-backend-api-rest.onrender.com/api/login", {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginData),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Error de autenticación");
-        return res.json();
-      })
-      .then((data) => {
-        const token = data.accessToken;
-        const tokenData = jwtDecode(token);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-        sessionStorage.token = token;
-        sessionStorage.email = tokenData.sub;
-        sessionStorage.nombre = tokenData.name || "Sin nombre";
-        sessionStorage.permiso = tokenData.idPermiso;
-        sessionStorage.usuario = tokenData.idUsuario;
-
-        setIntentos(3);
-        setMensaje("");
-        navigate("/Dashboard");
-      })
-      .catch((err) => {
-        console.error(err);
-        const nuevosIntentos = intentos - 1;
-        setIntentos(nuevosIntentos);
-        if (nuevosIntentos > 0) {
-          setMensaje(`Credenciales inválidas. Te quedan: ${nuevosIntentos} intentos.`);
-        } else {
-          alert("Número máximo de intentos alcanzado.");
-          if (botonRef.current) botonRef.current.style.display = "none";
-          if (userLogRef.current) userLogRef.current.disabled = true;
-          if (passLogRef.current) passLogRef.current.disabled = true;
-        }
+    try {
+      const res = await fetch("https://envifo-java-backend-api-rest.onrender.com/api/login", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+        signal: controller.signal,
       });
 
-    if (userLogRef.current) userLogRef.current.value = "";
-    if (passLogRef.current) passLogRef.current.value = "";
+      clearTimeout(timeout);
+
+      if (!res.ok) {
+        // try to parse error message
+        let text = '';
+        try { text = await res.text(); } catch (e) {}
+        throw new Error(text || 'Error de autenticación');
+      }
+
+      const data = await res.json();
+      const token = data && (data.accessToken || data.token);
+      if (!token) throw new Error('Token no recibido');
+
+      const tokenData = jwtDecode(token);
+
+      sessionStorage.token = token;
+      sessionStorage.email = tokenData.sub;
+      sessionStorage.nombre = tokenData.name || "Sin nombre";
+      sessionStorage.permiso = tokenData.idPermiso;
+      sessionStorage.usuario = tokenData.idUsuario;
+
+      setIntentos(3);
+      setMensaje("");
+      navigate("/Dashboard");
+    } catch (err) {
+      console.error('Login error:', err);
+      const nuevosIntentos = intentos - 1;
+      setIntentos(nuevosIntentos);
+
+      if (err.name === 'AbortError') {
+        setMensaje('La solicitud tardó demasiado. Intenta de nuevo.');
+      } else if (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError') || err.message.includes('Token no recibido'))) {
+        setMensaje('No se pudo conectar al servidor. Intenta más tarde.');
+      } else {
+        setMensaje(`Credenciales inválidas. Te quedan: ${nuevosIntentos} intentos.`);
+      }
+
+      if (nuevosIntentos <= 0) {
+        alert("Número máximo de intentos alcanzado.");
+        if (botonRef.current) botonRef.current.style.display = "none";
+        if (userLogRef.current) userLogRef.current.disabled = true;
+        if (passLogRef.current) passLogRef.current.disabled = true;
+      }
+    } finally {
+      clearTimeout(timeout);
+      if (userLogRef.current) userLogRef.current.value = "";
+      if (passLogRef.current) passLogRef.current.value = "";
+    }
   };
 
   return (
