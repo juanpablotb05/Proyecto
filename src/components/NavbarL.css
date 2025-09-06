@@ -1,6 +1,6 @@
 /* Barra superior */
 .navbar {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -150,7 +150,7 @@
 
 /* Contenido principal */
 .main-content {
-  padding: 80px 20px 20px; /* leave space for fixed navbar */
+  padding: 20px; /* navbar is sticky so it will occupy layout space */
    width: 100%;
    display: block; /* o flex solo si lo necesitas */
 }
@@ -158,6 +158,6 @@
 /* Reduce top padding on small screens */
 @media (max-width: 640px) {
   .main-content {
-    padding-top: 70px;
+    padding-top: 16px;
   }
 }
