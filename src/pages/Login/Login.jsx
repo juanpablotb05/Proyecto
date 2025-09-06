@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { Layout } from "../../components/Layout";
 
@@ -15,6 +15,7 @@ const Login = () => {
   const userLogRef = useRef(null);
   const passLogRef = useRef(null);
   const botonRef = useRef(null);
+  const navigate = useNavigate();
 
   // Nuevos estados para atributos adicionales
   const [formData, setFormData] = useState({
@@ -145,7 +146,7 @@ const Login = () => {
               Empresa
             </button>
           </div>
-        
+
           {/* Usuario */}
           {tipoUsuario === "Usuario" && (
             <>
@@ -199,6 +200,7 @@ const Login = () => {
           <input type="password" ref={passLogRef} placeholder="Password" />
           <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
           <button type="submit" className="button" ref={botonRef}>Login</button>
+          <button type="button" className="button" onClick={() => navigate("/")}>Volver al inicio</button>
           <p className="mensaje-error">{mensaje}</p>
         </form>
       </div>
@@ -228,6 +230,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-
