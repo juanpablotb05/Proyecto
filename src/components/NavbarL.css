@@ -150,7 +150,14 @@
 
 /* Contenido principal */
 .main-content {
-  padding: 20px;
+  padding: 80px 20px 20px; /* leave space for fixed navbar */
    width: 100%;
    display: block; /* o flex solo si lo necesitas */
+}
+
+/* Reduce top padding on small screens */
+@media (max-width: 640px) {
+  .main-content {
+    padding-top: 70px;
+  }
 }
