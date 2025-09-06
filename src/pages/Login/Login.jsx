@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import logo from '../../assets/ENVIFO.png';
 import { Layout } from "../../components/Layout";
+import { HiOutlineLogin } from "react-icons/hi";
 
 const Login = () => {
   const [isRightPanelActive, setRightPanelActive] = useState(false);
@@ -176,10 +177,7 @@ const Login = () => {
         <div className="form-container sign-in-container">
           <div style={{ position: "absolute", top: "10px", left: "10px" }}>
             <Link to="/" className="Login-btn" aria-label="Volver">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 19l-7-7 7-7" stroke="#000" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M3 12h14a4 4 0 0 1 4 4v0a4 4 0 0 1-4 4H3" stroke="#000" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <HiOutlineLogin size={28} color="black" />
             </Link>
           </div>
 
