@@ -71,12 +71,32 @@ const Login = () => {
     e.preventDefault();
     if (intentos <= 0) return;
 
+    const usuarioLog = (userLogRef.current && userLogRef.current.value || '').trim();
+
+    // If mocking is enabled, bypass network and simulate successful login
+    if (MOCK_LOGIN) {
+      const fakeToken = 'dev-token';
+      sessionStorage.token = fakeToken;
+      sessionStorage.email = usuarioLog || 'dev@local';
+      sessionStorage.nombre = 'Dev User';
+      sessionStorage.permiso = 'admin';
+      sessionStorage.usuario = '0';
+
+      setIntentos(3);
+      setMensaje('');
+      navigate('/Dashboard');
+
+      if (userLogRef.current) userLogRef.current.value = '';
+      if (passLogRef.current) passLogRef.current.value = '';
+      return;
+    }
+
+    // Real network login (kept for future use)
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
       setMensaje('Sin conexión. Por favor verifica tu red.');
       return;
     }
 
-    const usuarioLog = (userLogRef.current && userLogRef.current.value || '').trim();
     const passwordLog = (passLogRef.current && passLogRef.current.value || '').trim();
 
     const loginData = {
