@@ -12,6 +12,7 @@ const Login = () => {
   const [mensaje, setMensaje] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState("Usuario");
   const navigate = useNavigate();
+  const MOCK_LOGIN = true; // set to true to bypass network during development
   const userRef = useRef(null);
   const passRef = useRef(null);
   const userLogRef = useRef(null);
