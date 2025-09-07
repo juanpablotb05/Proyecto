@@ -35,7 +35,8 @@ export function NavbarL({ children }) {
 
     (async () => {
       try {
-        const base = import.meta.env.VITE_API_BASE || '';
+        // Base fija de la API (se usa la URL desplegada)
+        const base = "https://envifo-java-backend-api-rest.onrender.com/api";
         const res = await fetch(`${base.replace(/\/+$/, "")}/me`, {
           method: 'GET',
           headers: {
