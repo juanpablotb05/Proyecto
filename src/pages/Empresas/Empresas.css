@@ -2,7 +2,9 @@
 .empresas-container{max-width:1100px;margin:0 auto;padding:28px;font-family:Inter,system-ui,Arial;color:#0f172a}
 .empresas-header h1{font-size:28px;margin:0 0 6px}
 .empresas-header p{margin:0;color:var(--muted)}
-.empresas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}
+.empresas-grid{display:flex;gap:16px;margin-top:18px;padding-bottom:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* Ensure cards have fixed width in the horizontal row */
+.company-card{flex:0 0 260px}
 .company-card{display:block;border-radius:10px;overflow:hidden;background:#fff;border:1px solid #e6e7ea;text-decoration:none;color:inherit;box-shadow:0 2px 6px rgba(2,6,23,0.04);transition:transform .12s ease,box-shadow .12s ease;min-height:220px}
 .company-card:hover{transform:translateY(-6px);box-shadow:0 8px 20px rgba(2,6,23,0.08)}
 .company-image{height:140px;width:100%;object-fit:cover;display:block;background:#f3f4f6}
