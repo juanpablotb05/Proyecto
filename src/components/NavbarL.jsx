@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./NavbarL.css";
 
 export function NavbarL({ children }) {
@@ -11,6 +11,7 @@ export function NavbarL({ children }) {
 
   const menuRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // 🔹 Datos del perfil desde localStorage
   useEffect(() => {
@@ -35,11 +36,27 @@ export function NavbarL({ children }) {
     return () => document.removeEventListener("click", onClick);
   }, []);
 
+  // 🔹 Actualiza título según la ruta
+  useEffect(() => {
+    const path = (location.pathname || "").toLowerCase();
+    if (path.includes("/users")) setVista("Users");
+    else if (path.includes("/accountsettings")) setVista("AccountSettings");
+    else if (path.includes("/simulator")) setVista("Simulador");
+    else if (path.includes("/dashboard")) setVista("dashboard");
+    else if (path.includes("/userprofile")) setVista("UserProfile");
+    else if (path === "/" || path === "") setVista("home");
+    else setVista("dashboard");
+  }, [location]);
+
   // 🔹 Título dinámico
   const tituloSegunVista = () => {
-    if (vista === "Users") return "Panel de Usuarios";
-    if (vista === "Proyectos") return "Proyectos";
-    if (vista === "AccountSettings") return "Configuración de la cuenta";
+    const v = (vista || "").toLowerCase();
+    if (v === "users") return "Panel de Usuarios";
+    if (v === "proyectos") return "Proyectos";
+    if (v === "accountsettings") return "Configuración de la cuenta";
+    if (v === "simulador") return "Simulador 3D";
+    if (v === "userprofile") return "Perfil de Usuario";
+    if (v === "home") return "Inicio";
     return "Dashboard";
   };
 
@@ -113,8 +130,8 @@ export function NavbarL({ children }) {
           </button>
         </div>
         <div className="side">
-          <a href="Dashboard" onClick={() => setVista("dashboard")}>📊 Dashboard</a>
-          <a href="Users" onClick={() => setVista("usuarios")} >👥 Usuarios</a>
+          <Link to="/Dashboard" onClick={() => setIsMenuOpen(false)}>📊 Dashboard</Link>
+          <Link to="/Users" onClick={() => setIsMenuOpen(false)}>👥 Usuarios</Link>
           <a href="#projects" onClick={() => setVista("proyectos")}>🗂️ Proyectos</a>
           <a href="#materials" onClick={() => setVista("materiales")}>📋 Materiales</a>
           <Link to="/Simulator" onClick={() => setIsMenuOpen(false)}>🖥️ Simulador 3D</Link>
