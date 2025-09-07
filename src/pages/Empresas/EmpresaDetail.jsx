@@ -9,9 +9,9 @@ const sampleCompanies = [
     short: 'Soluciones residenciales sostenibles',
     description: 'Constructora Alpha se especializa en viviendas eco-friendly con enfoque en eficiencia energética y materiales locales.',
     images: [
-      'https://images.unsplash.com/photo-1565182999561-75a3f2a7a3c6?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=01d3b5d1f2a4b6f6b8f2d9e3f4b6c7d8',
-      'https://images.unsplash.com/photo-1505842465776-3d1f1b3c6d7e?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b7e2f5c6a8b9c0d1e2f3a4b5c6d7e8f',
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d'
+      'https://images.unsplash.com/photo-1505691723518-36a36b4f1b68?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1493787039807-1f8e2f0d1a0f?auto=format&fit=crop&w=1200&q=80'
     ]
   },
   {
