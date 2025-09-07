@@ -136,6 +136,7 @@ export function NavbarL({ children }) {
           <Link to="/Users" onClick={() => setIsMenuOpen(false)}>👥 Usuarios</Link>
           <a href="#projects" onClick={() => setVista("proyectos")}>🗂️ Proyectos</a>
           <Link to="/Materiales" onClick={() => setIsMenuOpen(false)}>📋 Materiales</Link>
+          <Link to="/Empresas" onClick={() => setIsMenuOpen(false)}>🏢 Empresas</Link>
           <Link to="/Simulator" onClick={() => setIsMenuOpen(false)}>🖥️ Simulador 3D</Link>
         </div>
       </div>
