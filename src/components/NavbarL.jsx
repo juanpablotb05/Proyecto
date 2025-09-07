@@ -43,6 +43,7 @@ export function NavbarL({ children }) {
     else if (path.includes("/accountsettings")) setVista("AccountSettings");
     else if (path.includes("/simulator")) setVista("Simulador");
     else if (path.includes("/materiales")) setVista("Materiales");
+    else if (path.includes("/empresas")) setVista("Empresas");
     else if (path.includes("/dashboard")) setVista("dashboard");
     else if (path.includes("/userprofile")) setVista("UserProfile");
     else if (path === "/" || path === "") setVista("home");
