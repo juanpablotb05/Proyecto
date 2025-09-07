@@ -14,6 +14,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Simulator from "./pages/Simulator/Simulator";
 import Users from "./pages/Users/Users";
 import Materiales from "./pages/Materiales/Materiales";
+import Empresas from "./pages/Empresas/Empresas";
+import EmpresaDetail from "./pages/Empresas/EmpresaDetail";
 
 function Layout() {
   const location = useLocation();
