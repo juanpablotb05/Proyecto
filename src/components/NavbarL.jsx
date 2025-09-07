@@ -14,28 +14,98 @@ export function NavbarL({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔹 Datos del perfil desde sessionStorage (preferido) y fallback a localStorage
+  // 🔹 Intentar obtener los datos de perfil desde la API si hay token disponible.
+  // 🔹 Si la API no está disponible, se usan los valores en sessionStorage/localStorage como fallback.
   useEffect(() => {
-    // Prefer sessionStorage values set at login, fallback to localStorage for persistent profile
     const photo = sessionStorage.getItem("profilePhoto") || localStorage.getItem("profilePhoto") || "";
     const name = sessionStorage.getItem("nombre") || sessionStorage.getItem("profileName") || localStorage.getItem("profileName") || "A";
-    const perm = sessionStorage.getItem("permiso") || localStorage.getItem("permiso") || null;
+    const storedPerm = sessionStorage.getItem("permiso") || localStorage.getItem("permiso") || null;
 
+    // Aplicar valores guardados inicialmente
     setProfilePhoto(photo);
     setProfileName(name);
-    setPermiso(perm);
+    setPermiso(storedPerm);
 
+    // Si existe un token, intentar recuperar perfil desde la API
+    const token = sessionStorage.getItem("token") || null;
+    if (!token) {
+      // No hay token: solo suscribe a cambios de storage y retorna
+      const onStorage = (e) => {
+        if (e.key === "profilePhoto") setProfilePhoto(e.newValue || "");
+        if (e.key === "profileName" || e.key === "nombre") setProfileName(e.newValue || "A");
+        if (e.key === "permiso") setPermiso(e.newValue || null);
+      };
+      window.addEventListener("storage", onStorage);
+      return () => window.removeEventListener("storage", onStorage);
+    }
+
+    // Lógica para llamar al endpoint /me y actualizar perfil
+    let mounted = true;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    (async () => {
+      try {
+        const base = import.meta.env.VITE_API_BASE || '';
+        const res = await fetch(`${base.replace(/\/+$/, "")}/me`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          signal: controller.signal
+        });
+
+        if (!mounted) return;
+        clearTimeout(timeout);
+
+        if (!res.ok) {
+          // Si la API responde con error, no tratamos de bloquear la app; usamos los valores locales
+          console.warn('No se pudo obtener perfil desde la API:', res.status);
+          return;
+        }
+
+        const data = await res.json();
+        // Intentar leer varios campos que puedan representar el permiso/rol
+        const permFromApi = data.permiso || data.role || data.roles || data.idPermiso || data.permission || data.permissionLevel || null;
+        const nombreFromApi = data.name || data.nombre || data.firstName || data.username || data.email || null;
+        const photoFromApi = data.photo || data.profilePhoto || data.avatar || null;
+
+        if (mounted) {
+          if (permFromApi) {
+            setPermiso(permFromApi);
+            try { sessionStorage.setItem('permiso', permFromApi); localStorage.setItem('permiso', permFromApi); } catch (e) {}
+          }
+          if (nombreFromApi) {
+            setProfileName(nombreFromApi);
+            try { sessionStorage.setItem('nombre', nombreFromApi); localStorage.setItem('profileName', nombreFromApi); } catch (e) {}
+          }
+          if (photoFromApi) {
+            setProfilePhoto(photoFromApi);
+            try { sessionStorage.setItem('profilePhoto', photoFromApi); localStorage.setItem('profilePhoto', photoFromApi); } catch (e) {}
+          }
+        }
+      } catch (err) {
+        if (err.name === 'AbortError') console.warn('Solicitud para obtener perfil abortada');
+        else console.warn('Error al obtener perfil desde API:', err);
+      }
+    })();
+
+    // Suscripción a cambios en localStorage para estar sincronizados entre pestañas
     const onStorage = (e) => {
-      // localStorage changes trigger this event across windows/tabs
       if (e.key === "profilePhoto") setProfilePhoto(e.newValue || "");
-      if (e.key === "profileName") setProfileName(e.newValue || "A");
-      // Also handle possible 'nombre' key in localStorage
-      if (e.key === "nombre") setProfileName(e.newValue || "A");
+      if (e.key === "profileName" || e.key === "nombre") setProfileName(e.newValue || "A");
       if (e.key === "permiso") setPermiso(e.newValue || null);
     };
-
     window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+
+    return () => {
+      mounted = false;
+      controller.abort();
+      clearTimeout(timeout);
+      window.removeEventListener("storage", onStorage);
+    };
   }, []);
 
   // 🔹 Cierra menú de perfil si clic afuera
