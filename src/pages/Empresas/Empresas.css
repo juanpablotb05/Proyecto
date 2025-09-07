@@ -16,7 +16,10 @@
 .detail-top{display:flex;flex-direction:column;gap:12px}
 .back-btn{position:absolute;left:12px;top:12px;z-index:40;background:rgba(255,255,255,0.9);border:1px solid #e6e7ea;padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:600;box-shadow:0 2px 6px rgba(2,6,23,0.06)}
 .carousel{position:relative;width:100%;height:420px;background:#f3f4f6;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.carousel img{width:100%;height:100%;object-fit:cover}
+.carousel img{width:100%;height:100%;object-fit:cover;display:block}
+.img-wrapper{position:relative;width:100%;height:100%}
+.img-placeholder{position:absolute;inset:0;background:linear-gradient(180deg,#f1f5f9,#fff);display:flex;align-items:center;justify-content:center}
+.img-placeholder:after{content:'';width:56px;height:56px;border-radius:8px;background:linear-gradient(90deg,#e2e8f0,#cbd5e1);box-shadow:inset 0 0 12px rgba(255,255,255,0.6)}
 .chev{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.85);border:none;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:20px}
 .chev.left{left:12px}
 .chev.right{right:12px}
