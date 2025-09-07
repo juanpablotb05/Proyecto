@@ -12,6 +12,7 @@ import UserProfile from "./pages/UserProfile/UserProfile";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Simulator from "./pages/Simulator/Simulator";
 import Users from "./pages/Users/Users";
+import Materiales from "./pages/Materiales/Materiales";
 
 function Layout() {
   const location = useLocation();
