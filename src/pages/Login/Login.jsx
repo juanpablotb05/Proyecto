@@ -133,11 +133,22 @@ const Login = () => {
 
       const tokenData = jwtDecode(token);
 
+      // Save token and profile info in sessionStorage
       sessionStorage.token = token;
       sessionStorage.email = tokenData.sub;
       sessionStorage.nombre = tokenData.name || "Sin nombre";
       sessionStorage.permiso = tokenData.idPermiso;
       sessionStorage.usuario = tokenData.idUsuario;
+
+      // Also persist a copy in localStorage so profile info can persist across sessions/tabs
+      try {
+        localStorage.setItem("profileName", tokenData.name || tokenData.sub || "Sin nombre");
+        // If the token includes a profile photo URL, store it too (optional)
+        if (tokenData.photo) localStorage.setItem("profilePhoto", tokenData.photo);
+      } catch (e) {
+        // If localStorage is not available, ignore
+        console.warn('localStorage not available to persist profile data');
+      }
 
       setIntentos(3);
       setMensaje("");
