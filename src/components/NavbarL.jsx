@@ -19,9 +19,11 @@ export function NavbarL({ children }) {
     // Prefer sessionStorage values set at login, fallback to localStorage for persistent profile
     const photo = sessionStorage.getItem("profilePhoto") || localStorage.getItem("profilePhoto") || "";
     const name = sessionStorage.getItem("nombre") || sessionStorage.getItem("profileName") || localStorage.getItem("profileName") || "A";
+    const perm = sessionStorage.getItem("permiso") || localStorage.getItem("permiso") || null;
 
     setProfilePhoto(photo);
     setProfileName(name);
+    setPermiso(perm);
 
     const onStorage = (e) => {
       // localStorage changes trigger this event across windows/tabs
@@ -29,6 +31,7 @@ export function NavbarL({ children }) {
       if (e.key === "profileName") setProfileName(e.newValue || "A");
       // Also handle possible 'nombre' key in localStorage
       if (e.key === "nombre") setProfileName(e.newValue || "A");
+      if (e.key === "permiso") setPermiso(e.newValue || null);
     };
 
     window.addEventListener("storage", onStorage);
