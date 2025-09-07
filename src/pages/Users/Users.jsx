@@ -11,6 +11,19 @@ const usuariosIniciales = [
 ];
 
 export default function Users() {
+  const navigate = useNavigate();
+
+  // Redirigir si el usuario no tiene permiso
+  useEffect(() => {
+    const perm = sessionStorage.getItem('permiso') || localStorage.getItem('permiso') || null;
+    const isAdmin = perm === 'admin' || perm === '1' || perm === 1 || perm === '0';
+    if (!isAdmin) {
+      // Evitar que usuarios normales accedan a la vista de Usuarios
+      alert('No tienes permisos para acceder a la sección de Usuarios');
+      navigate('/Dashboard');
+    }
+  }, [navigate]);
+
   const [usuarios, setUsuarios] = useState(usuariosIniciales);
   const [busqueda, setBusqueda] = useState("");
 
