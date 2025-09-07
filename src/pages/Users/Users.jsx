@@ -70,13 +70,15 @@ export default function Users() {
         // Si es admin, continuar
         if (mounted) setChecking(false);
       } catch (err) {
+        let errMsg;
         if (err.name === 'AbortError') {
-          setError('La solicitud tardó demasiado. Intenta de nuevo.');
+          errMsg = 'La solicitud tardó demasiado. Intenta de nuevo.';
         } else {
-          setError('Error al verificar permisos');
+          errMsg = 'Error al verificar permisos';
         }
+        setError(errMsg);
         console.error('Error verificando permisos:', err);
-        alert(error || 'No se pudo verificar permisos. Serás redirigido.');
+        alert(errMsg + '. Serás redirigido.');
         navigate('/Dashboard');
       } finally {
         clearTimeout(timeout);
