@@ -146,7 +146,12 @@ export function NavbarL({ children }) {
         </div>
         <div className="side">
           <Link to="/Dashboard" onClick={() => setIsMenuOpen(false)}>📊 Dashboard</Link>
-          <Link to="/Users" onClick={() => setIsMenuOpen(false)}>👥 Usuarios</Link>
+          {/* Mostrar enlace 'Usuarios' solo para administradores */}
+          {(() => {
+            const perm = permiso || (sessionStorage.getItem('permiso') || localStorage.getItem('permiso'));
+            const isAdmin = perm === 'admin' || perm === '1' || perm === 1 || perm === '0';
+            return isAdmin ? <Link to="/Users" onClick={() => setIsMenuOpen(false)}>👥 Usuarios</Link> : null;
+          })()}
           <a href="#projects" onClick={() => setVista("proyectos")}>🗂️ Proyectos</a>
           <Link to="/Materiales" onClick={() => setIsMenuOpen(false)}>📋 Materiales</Link>
           <Link to="/Empresas" onClick={() => setIsMenuOpen(false)}>🏢 Empresas</Link>
