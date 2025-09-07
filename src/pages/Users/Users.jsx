@@ -31,46 +31,41 @@ export default function Users() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
 
-    (async () => {
-      try {
-        // Base fija de la API (se usa la URL desplegada)
-        const base = "https://envifo-java-backend-api-rest.onrender.com/api";
-        const res = await fetch(`${base.replace(/\/+$/, "")}/me`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          signal: controller.signal
-        });
+    // Usar fetch con then/catch siguiendo el patrón del login
+    const base = "https://envifo-java-backend-api-rest.onrender.com/api";
 
-        if (!mounted) return;
+    fetch(`${base.replace(/\/+$/, "")}/me`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      signal: controller.signal
+    })
+      .then((res) => {
         clearTimeout(timeout);
-
         if (!res.ok) {
-          // Si la API devuelve error, mostramos mensaje y redirigimos
           const msg = `No autorizado o error de servidor (${res.status})`;
           setError(msg);
           alert(msg);
           navigate('/Dashboard');
-          return;
+          return null;
         }
-
-        const data = await res.json();
-        // Intentar extraer permiso/rol
+        return res.json();
+      })
+      .then((data) => {
+        if (!mounted || !data) return;
         const permFromApi = data.permiso || data.role || data.roles || data.idPermiso || data.permission || data.permissionLevel || null;
         const isAdmin = permFromApi === 'admin' || permFromApi === '1' || permFromApi === 1 || permFromApi === '0';
-
         if (!isAdmin) {
           alert('No tienes permisos para acceder a la sección de Usuarios');
           navigate('/Dashboard');
           return;
         }
-
-        // Si es admin, continuar
         if (mounted) setChecking(false);
-      } catch (err) {
+      })
+      .catch((err) => {
         let errMsg;
         if (err.name === 'AbortError') {
           errMsg = 'La solicitud tardó demasiado. Intenta de nuevo.';
@@ -81,10 +76,10 @@ export default function Users() {
         console.error('Error verificando permisos:', err);
         alert(errMsg + '. Serás redirigido.');
         navigate('/Dashboard');
-      } finally {
+      })
+      .finally(() => {
         clearTimeout(timeout);
-      }
-    })();
+      });
 
     return () => {
       mounted = false;
