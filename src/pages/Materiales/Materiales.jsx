@@ -22,11 +22,11 @@ export default function Materiales() {
     }
   }, []);
 
-  const guardarEnLocal = (arr) => {
+  const guardarEnSesion = (arr) => {
     try {
-      localStorage.setItem("misTexturas", JSON.stringify(arr));
+      sessionStorage.setItem("misTexturas", JSON.stringify(arr));
     } catch (err) {
-      console.warn("No se pudo guardar en localStorage", err);
+      console.warn("No se pudo guardar en sessionStorage", err);
     }
   };
 
