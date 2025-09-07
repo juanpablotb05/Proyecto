@@ -39,7 +39,7 @@ export default function Materiales() {
       const nueva = { id: Date.now().toString(), nombre: file.name, data };
       const nuevaLista = [nueva, ...misTexturas];
       setMisTexturas(nuevaLista);
-      guardarEnLocal(nuevaLista);
+      guardarEnSesion(nuevaLista);
       alert("Textura subida");
     };
     reader.readAsDataURL(file);
