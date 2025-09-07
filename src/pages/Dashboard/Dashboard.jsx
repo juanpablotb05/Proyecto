@@ -31,30 +31,6 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Stats */}
-        <div className="stats-grid">
-          <div className="stat-card">
-            <h3>Total Clientes</h3>
-            <p className="stat-value">2,543</p>
-            <span className="stat-change positive">+15%</span>
-          </div>
-          <div className="stat-card">
-            <h3>Deals Ganados</h3>
-            <p className="stat-value">$542K</p>
-            <span className="stat-change positive">+23%</span>
-          </div>
-          <div className="stat-card">
-            <h3>Nuevos Leads</h3>
-            <p className="stat-value">456</p>
-            <span className="stat-change positive">+12%</span>
-          </div>
-          <div className="stat-card">
-            <h3>Tasa Conversión</h3>
-            <p className="stat-value">28%</p>
-            <span className="stat-change negative">-5%</span>
-          </div>
-        </div>
-
         {/* Contenido */}
         <div className="content-grid">
           <div className="upload-container large">
