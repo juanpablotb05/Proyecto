@@ -5,6 +5,7 @@ import "./NavbarL.css";
 export function NavbarL({ children }) {
   const [profilePhoto, setProfilePhoto] = useState("");
   const [profileName, setProfileName] = useState("A");
+  const [permiso, setPermiso] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false); // menú de perfil
   const [isMenuOpen, setIsMenuOpen] = useState(false); // menú lateral
   const [vista, setVista] = useState("dashboard");
