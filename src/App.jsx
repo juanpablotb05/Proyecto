@@ -40,8 +40,8 @@ function Layout() {
   const isLoginPage = loginRoutes.includes(location.pathname);
   const showNavbar = !noNavbarRoutes.includes(location.pathname);
 
-  // Usar NavbarL específicamente en la ruta /Materiales
-  const showNavbarL = location.pathname === "/Materiales";
+  // Usar NavbarL específicamente en las rutas /Materiales y /Empresas
+  const showNavbarL = location.pathname.startsWith("/Materiales") || location.pathname.startsWith("/Empresas");
 
   // Clase principal del main
   const mainClass = isLoginPage
