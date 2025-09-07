@@ -56,7 +56,8 @@ export default function AccountSettings() {
     if (nombre && email) {
       setUsuario((u) => ({ ...u, nombre, email }));
       try {
-        localStorage.setItem("profileName", nombre);
+        sessionStorage.setItem("profileName", nombre);
+        sessionStorage.setItem("nombre", nombre);
       } catch (err) {}
     }
   };
