@@ -81,8 +81,8 @@ export default function Dashboard() {
               <div className="upload-icon">🏢</div>
               <h3>Empresas</h3>
               <p>Explora texturas y proyectos de algunas empresas</p>
-              <input type="file" multiple onChange={handleFileUpload} className="file-input" />
-              <button className="upload-btn">Ver empresas</button>
+              <input type="file" multiple onChange={handleFileUpload} className="file-input" style={{display:'none'}} />
+              <Link to="/Empresas" className="upload-btn" style={{display:'inline-block', textDecoration:'none', textAlign:'center'}}>Ver empresas</Link>
             </div>
           </div>
         </div>
