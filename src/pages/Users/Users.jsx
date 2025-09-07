@@ -149,6 +149,16 @@ export default function Users() {
     }
   };
 
+  if (checking) {
+    return (
+      <NavbarL>
+        <div className="panel-usuarios">
+          <p>Cargando permisos...</p>
+        </div>
+      </NavbarL>
+    );
+  }
+
   return (
     <NavbarL>
     <div className="panel-usuarios">
