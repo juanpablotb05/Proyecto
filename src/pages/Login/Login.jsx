@@ -82,9 +82,11 @@ const Login = () => {
       sessionStorage.permiso = 'admin';
       sessionStorage.usuario = '0';
 
-      // Persist mock profile name locally for development convenience
+      // Guardar perfil de mock en sessionStorage únicamente
       try {
-        localStorage.setItem('profileName', 'Dev User');
+        sessionStorage.setItem('nombre', 'Dev User');
+        sessionStorage.setItem('profilePhoto', '');
+        sessionStorage.setItem('permiso', 'admin');
       } catch (e) {
         // ignore
       }
