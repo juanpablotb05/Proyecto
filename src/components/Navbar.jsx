@@ -1,25 +1,33 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/ENVIFO.png";
-import './Navbar.css';
+import "./Navbar.css";
+import { FaRegUserCircle } from "react-icons/fa";
 
 function Navbar() {
   return (
     <nav>
-        <div className="logo">
+      <div className="logo">
         <img src={logo} alt="Logo" />
       </div>
-      <ul>
+
+      <ul className="menu">
         <li>
           <Link to="/">Home</Link>
         </li>
         <li>
-            <Link to="/Contact">Contact</Link>
+          <Link to="/Simulator">Simulador 3D</Link>
         </li>
         <li>
-            <Link to="/Login">Login</Link>
+          <Link to="/Contact">Contact</Link>
         </li>
       </ul>
+
+      <div className="right-section">
+        <Link to="/Login" className="login-btn" aria-label="Login">
+          <FaRegUserCircle size={28} color="white" />
+        </Link>
+      </div>
     </nav>
   );
 }

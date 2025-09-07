@@ -1,5 +1,6 @@
-
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+
 
 h1 {
 	font-weight: bold;
@@ -29,6 +30,28 @@ a {
 	margin: 15px 0;
 }
 
+.logo-section {
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+img.logo {
+  width: 160px !important;
+  height: 160px !important;
+  object-fit: contain;
+  display: block;
+}
+
+
+.logo-section .app-name {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #333;
+}
+
 button {
 	border-radius: 20px;
 	border: 1px solid #ff6600;
@@ -41,6 +64,7 @@ button {
 	text-transform: uppercase;
 	transition: transform 80ms ease-in;
 }
+
 
 button:active {
 	transform: scale(0.95);
@@ -335,4 +359,11 @@ footer p {
 
 .tipo-usuario-btn.active {
   background-color: #cc5200; /* O un color distinto para activo */
+}
+
+.page-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

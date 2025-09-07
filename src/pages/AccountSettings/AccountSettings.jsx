@@ -1,101 +1,199 @@
-import React, { useState } from 'react';
-import './AccountSettings.css';
+import { useState, useRef, useEffect } from "react";
+import "./AccountSettings.css";
+import { NavbarL } from "../../components/NavbarL";
 
-const AccountSettings = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    name: '',
-    lastName: '',
-    email: '',
+export default function AccountSettings() {
+  const [usuario, setUsuario] = useState({
+    id: 1,
+    nombre: "María García",
+    email: "maria@empresa.com",
+    rol: "Administrador",
+    activo: true,
+    ultimoAcceso: "hace 5 minutos",
+    telefono: "+57 300 123 4567",
+    ubicacion: "Medellín, Colombia",
   });
 
-  const [image, setImage] = useState(null);
+  const [fotoUrl, setFotoUrl] = useState("");
+  const fileInputRef = useRef(null);
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
-  };
+  useEffect(() => {
+    const stored = localStorage.getItem("profilePhoto");
+    if (stored) setFotoUrl(stored);
+    const storedName = localStorage.getItem("profileName");
+    if (storedName) setUsuario((u) => ({ ...u, nombre: storedName }));
+  }, []);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const onFotoChange = (e) => {
+    const file = e.target.files && e.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const result = ev.target.result;
+        setFotoUrl(result);
+        try {
+          localStorage.setItem("profilePhoto", result);
+        } catch (err) {
+          console.warn("No se pudo guardar la foto en localStorage", err);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Datos enviados:', formData);
+  const quitarFoto = () => {
+    setFotoUrl("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    try {
+      localStorage.removeItem("profilePhoto");
+    } catch (err) {}
+  };
+
+  const editarPerfil = () => {
+    const nombre = prompt("Nombre completo:", usuario.nombre);
+    const email = prompt("Correo electrónico:", usuario.email);
+    if (nombre && email) {
+      setUsuario((u) => ({ ...u, nombre, email }));
+      try {
+        localStorage.setItem("profileName", nombre);
+      } catch (err) {}
+    }
   };
 
   return (
-    <div className="account-settings-container">
-      <div className="sidebar">
-        <div className="profile-section">
-          <div className="profile-image-circle">
-            {image ? (
-              <img src={image} alt="Profile" className="profile-image" />
-            ) : (
-              <div className="no-image">Sin imagen</div>
-            )}
+    <NavbarL>
+      <div className="perfil-container">
+        {/* Encabezado */}
+        <div className="perfil-header">
+          <div className="perfil-header-content">
+            <div className="perfil-user-info">
+              {fotoUrl ? (
+                <img
+                  src={fotoUrl}
+                  alt={`Foto de perfil de ${usuario.nombre}`}
+                  className="perfil-avatar-lg"
+                />
+              ) : (
+                <div className="perfil-avatar-placeholder-lg">
+                  {usuario.nombre.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div>
+                <h1 className="perfil-title">Perfil de Usuario</h1>
+                <p className="perfil-subtitle">
+                  Información y acciones del perfil
+                </p>
+              </div>
+            </div>
+            <div>
+              <span
+                className={`perfil-status ${
+                  usuario.activo ? "activo" : "inactivo"
+                }`}
+              >
+                {usuario.activo ? "✅ Activo" : "❌ Inactivo"}
+              </span>
+            </div>
           </div>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
-          <div className="profile-name">{formData.name || 'Usuario'}</div>
-          <a href="#" className="view-profile-link">Ver el perfil</a>
         </div>
-      </div>
 
-      <div className="main-content">
-        <div className="account-header">
-          <h2>Cuenta</h2>
+        {/* Contenido principal */}
+        <div className="perfil-main">
+          {/* Tarjeta de detalles del usuario */}
+          <div className="perfil-card">
+            <div className="perfil-user-summary">
+              {fotoUrl ? (
+                <img
+                  src={fotoUrl}
+                  alt={`Foto de perfil de ${usuario.nombre}`}
+                  className="perfil-avatar-md"
+                />
+              ) : (
+                <div className="perfil-avatar-placeholder-md">
+                  {usuario.nombre.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div>
+                <h2 className="perfil-username">{usuario.nombre}</h2>
+                <p className="perfil-email">{usuario.email}</p>
+              </div>
+            </div>
+            <div className="perfil-actions">
+              <button
+                onClick={() =>
+                  fileInputRef.current && fileInputRef.current.click()
+                }
+                className="btn-secondary"
+              >
+                CAMBIAR FOTO
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={onFotoChange}
+                style={{ display: "none" }}
+              />
+            </div>
+            <div className="perfil-details">
+              <div className="perfil-detail-row">
+                <span>Rol</span>
+                <span>
+                  {usuario.rol}
+                </span>
+              </div>
+              <div className="perfil-detail-row">
+                <span>Último acceso</span>
+                <span>{usuario.ultimoAcceso}</span>
+              </div>
+              <div className="perfil-detail-row">
+                <span>Teléfono</span>
+                <span>{usuario.telefono}</span>
+              </div>
+              <div className="perfil-detail-row">
+                <span>Ubicación</span>
+                <span>{usuario.ubicacion}</span>
+              </div>
+            </div>
+            <div className="perfil-actions" style={{ marginTop: '1.5rem' }}>
+              <button onClick={editarPerfil} className="btn-primary">
+                EDITAR
+              </button>
+              <button className="btn-danger">
+                CONTRASEÑA
+              </button>
+            </div>
+          </div>
+
+          {/* Tarjeta de actividad reciente */}
+          <div className="perfil-card">
+            <h2 className="perfil-section-title">Actividad reciente</h2>
+            <ul className="perfil-activity">
+              <li>
+                <span>✅</span>
+                <div>
+                  <p>Ingreso al sistema</p>
+                  <p className="perfil-subtitle">Hace 5 minutos</p>
+                </div>
+              </li>
+              <li>
+                <span>📝</span>
+                <div>
+                  <p>Actualizó un proyecto</p>
+                  <p className="perfil-subtitle">Hoy, 10:21 AM</p>
+                </div>
+              </li>
+              <li>
+                <span>🔒</span>
+                <div>
+                  <p>Cambio de contraseña exitoso</p>
+                  <p className="perfil-subtitle">Ayer, 6:12 PM</p>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <form className="account-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Nombre de usuario</label>
-            <input
-              type="text"
-              id="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Ingrese su nombre de usuario"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="name">Nombre</label>
-            <input
-              type="text"
-              id="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Ingrese su nombre"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="lastName">Apellidos</label>
-            <input
-              type="text"
-              id="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              placeholder="Ingrese sus apellidos"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Correo electrónico</label>
-            <input
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="usuario@correo.com"
-            />
-          </div>
-          <button type="submit" className="update-button">Actualizar cuenta</button>
-        </form>
       </div>
-    </div>
+    </NavbarL>
   );
-};
-
-export default AccountSettings;
-
+}
