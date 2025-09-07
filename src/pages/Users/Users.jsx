@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Users.css"; // Importa estilos extra
 import { NavbarL } from "../../components/NavbarL";
 
