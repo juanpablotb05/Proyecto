@@ -82,6 +82,13 @@ const Login = () => {
       sessionStorage.permiso = 'admin';
       sessionStorage.usuario = '0';
 
+      // Persist mock profile name locally for development convenience
+      try {
+        localStorage.setItem('profileName', 'Dev User');
+      } catch (e) {
+        // ignore
+      }
+
       setIntentos(3);
       setMensaje('');
       navigate('/Dashboard');
