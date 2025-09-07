@@ -80,9 +80,9 @@ export default function Dashboard() {
             <div className="upload-area">
               <div className="upload-icon">🏢</div>
               <h3>Empresas</h3>
-              <p>Sube información o archivos relacionados con empresas</p>
+              <p>Explora texturas y proyectos de algunas empresas</p>
               <input type="file" multiple onChange={handleFileUpload} className="file-input" />
-              <button className="upload-btn">Agregar contenido</button>
+              <button className="upload-btn">Ver empresas</button>
             </div>
           </div>
         </div>
