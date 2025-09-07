@@ -147,14 +147,13 @@ const Login = () => {
       sessionStorage.permiso = tokenData.idPermiso;
       sessionStorage.usuario = tokenData.idUsuario;
 
-      // Also persist a copy in localStorage so profile info can persist across sessions/tabs
+      // Guardar datos de perfil en sessionStorage (temporal por sesión)
       try {
-        localStorage.setItem("profileName", tokenData.name || tokenData.sub || "Sin nombre");
-        // If the token includes a profile photo URL, store it too (optional)
-        if (tokenData.photo) localStorage.setItem("profilePhoto", tokenData.photo);
+        if (tokenData.name) sessionStorage.setItem('nombre', tokenData.name);
+        if (tokenData.photo) sessionStorage.setItem('profilePhoto', tokenData.photo);
+        if (tokenData.idPermiso) sessionStorage.setItem('permiso', tokenData.idPermiso);
       } catch (e) {
-        // If localStorage is not available, ignore
-        console.warn('localStorage not available to persist profile data');
+        console.warn('No se pudieron guardar datos de sesión');
       }
 
       setIntentos(3);
