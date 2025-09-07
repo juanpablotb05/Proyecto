@@ -135,22 +135,10 @@ const Login = () => {
       .then((data) => {
         const token = data && (data.accessToken || data.token);
         if (!token) throw new Error('Token no recibido');
-        const tokenData = jwtDecode(token);
 
-        // Save token and profile info in sessionStorage
+        // Guardar únicamente el token en sessionStorage. El perfil y permisos se obtienen
+        // desde el endpoint /me en NavbarL y otras vistas cuando sea necesario.
         sessionStorage.token = token;
-        sessionStorage.email = tokenData.sub;
-        sessionStorage.nombre = tokenData.name || "Sin nombre";
-        sessionStorage.permiso = tokenData.idPermiso;
-        sessionStorage.usuario = tokenData.idUsuario;
-
-        try {
-          if (tokenData.name) sessionStorage.setItem('nombre', tokenData.name);
-          if (tokenData.photo) sessionStorage.setItem('profilePhoto', tokenData.photo);
-          if (tokenData.idPermiso) sessionStorage.setItem('permiso', tokenData.idPermiso);
-        } catch (e) {
-          console.warn('No se pudieron guardar datos de sesión');
-        }
 
         setIntentos(3);
         setMensaje("");
