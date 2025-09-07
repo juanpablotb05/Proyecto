@@ -45,7 +45,7 @@ export default function Empresas() {
       <div className="empresas-grid">
         {sampleCompanies.map((c) => (
           <Link to={`/Empresas/${c.id}`} className="company-card" key={c.id}>
-            <img src={c.images[0]} alt={c.name} className="company-image" onError={(e)=>{e.currentTarget.src='/src/assets/Logo.jpeg'}} />
+            <img src={c.images[0]} alt={c.name} className="company-image" onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src=logoPlaceholder }} loading="lazy" />
             <div className="company-body">
               <h3>{c.name}</h3>
               <p>{c.short}</p>
