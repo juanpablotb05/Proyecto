@@ -132,10 +132,10 @@ export function NavbarL({ children }) {
           </button>
         </div>
         <div className="side">
-          <Link to="/Dashboard" onClick={() => setIsMenuOpen(false)}>�� Dashboard</Link>
+          <Link to="/Dashboard" onClick={() => setIsMenuOpen(false)}>📊 Dashboard</Link>
           <Link to="/Users" onClick={() => setIsMenuOpen(false)}>👥 Usuarios</Link>
           <a href="#projects" onClick={() => setVista("proyectos")}>🗂️ Proyectos</a>
-          <a href="#materials" onClick={() => setVista("materiales")}>📋 Materiales</a>
+          <Link to="/Materiales" onClick={() => setIsMenuOpen(false)}>📋 Materiales</Link>
           <Link to="/Simulator" onClick={() => setIsMenuOpen(false)}>🖥️ Simulador 3D</Link>
         </div>
       </div>
