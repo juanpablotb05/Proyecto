@@ -3,9 +3,10 @@
 .empresas-header h1{font-size:28px;margin:0 0 6px}
 .empresas-header p{margin:0;color:var(--muted)}
 .empresas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}
-.company-card{display:block;border-radius:10px;overflow:hidden;background:#fff;border:1px solid #e6e7ea;text-decoration:none;color:inherit;box-shadow:0 2px 6px rgba(2,6,23,0.04);transition:transform .12s ease,box-shadow .12s ease}
+.company-card{display:block;border-radius:10px;overflow:hidden;background:#fff;border:1px solid #e6e7ea;text-decoration:none;color:inherit;box-shadow:0 2px 6px rgba(2,6,23,0.04);transition:transform .12s ease,box-shadow .12s ease;min-height:220px}
 .company-card:hover{transform:translateY(-6px);box-shadow:0 8px 20px rgba(2,6,23,0.08)}
 .company-image{height:140px;width:100%;object-fit:cover;display:block;background:#f3f4f6}
+.company-image:empty{background:#eef2f6}
 .company-body{padding:12px}
 .company-body h3{margin:0;font-size:16px}
 .company-body p{margin:6px 0 0;color:var(--muted);font-size:13px}
