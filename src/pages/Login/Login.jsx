@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import logo from '../../assets/ENVIFO.png';
 import { Layout } from "../../components/Layout";
 import { HiOutlineLogin } from "react-icons/hi";
