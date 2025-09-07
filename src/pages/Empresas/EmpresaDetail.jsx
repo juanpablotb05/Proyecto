@@ -51,6 +51,7 @@ export default function EmpresaDetail(){
 
   const prev = () => setIndex(i => (i -1 + company.images.length) % company.images.length);
   const next = () => setIndex(i => (i +1) % company.images.length);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
     <div className="empresa-detail">
@@ -58,7 +59,18 @@ export default function EmpresaDetail(){
         <div className="carousel">
           <button className="back-btn" onClick={() => navigate('/Empresas')} aria-label="Volver">← Volver</button>
           <button className="chev left" onClick={prev}>‹</button>
-          <img src={company.images[index]} alt={`${company.name} ${index+1}`} />
+
+          <div className="img-wrapper">
+            {!imgLoaded && <div className="img-placeholder"> </div>}
+            <img
+              src={company.images[index]}
+              alt={`${company.name} ${index+1}`}
+              onLoad={() => setImgLoaded(true)}
+              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = placeholderImg; setImgLoaded(true); }}
+              style={{ opacity: imgLoaded ? 1 : 0, transition: 'opacity 300ms ease' }}
+            />
+          </div>
+
           <button className="chev right" onClick={next}>›</button>
         </div>
       </div>
