@@ -17,10 +17,11 @@ export default function AccountSettings() {
   const [fotoUrl, setFotoUrl] = useState("");
   const fileInputRef = useRef(null);
 
+  // Cargar foto y nombre desde sessionStorage (solo por sesión)
   useEffect(() => {
-    const stored = localStorage.getItem("profilePhoto");
+    const stored = sessionStorage.getItem("profilePhoto");
     if (stored) setFotoUrl(stored);
-    const storedName = localStorage.getItem("profileName");
+    const storedName = sessionStorage.getItem("profileName") || sessionStorage.getItem("nombre");
     if (storedName) setUsuario((u) => ({ ...u, nombre: storedName }));
   }, []);
 
