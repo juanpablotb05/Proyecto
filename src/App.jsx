@@ -67,6 +67,8 @@ function Layout() {
           <Route path="/Simulator" element={<Simulator />} />
           <Route path="/Users" element={<Users />} />
           <Route path="/Materiales" element={<Materiales />} />
+          <Route path="/Empresas" element={<Empresas />} />
+          <Route path="/Empresas/:id" element={<EmpresaDetail />} />
         </Routes>
       </main>
     </div>
