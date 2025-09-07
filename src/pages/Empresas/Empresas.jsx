@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logoPlaceholder from '../../assets/Logo.jpeg';
 import './Empresas.css';
 
 const sampleCompanies = [
