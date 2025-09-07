@@ -9,9 +9,9 @@ const sampleCompanies = [
     name: 'Constructora Alpha',
     short: 'Soluciones residenciales sostenibles',
     images: [
-      'https://images.unsplash.com/photo-1565182999561-75a3f2a7a3c6?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=01d3b5d1f2a4b6f6b8f2d9e3f4b6c7d8',
-      'https://images.unsplash.com/photo-1505842465776-3d1f1b3c6d7e?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b7e2f5c6a8b9c0d1e2f3a4b5c6d7e8f',
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d'
+      'https://images.unsplash.com/photo-1505691723518-36a36b4f1b68?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1493787039807-1f8e2f0d1a0f?auto=format&fit=crop&w=1200&q=80'
     ]
   },
   {
@@ -19,8 +19,8 @@ const sampleCompanies = [
     name: 'Diseño Beta',
     short: 'Arquitectura e interiorismo de vanguardia',
     images: [
-      'https://images.unsplash.com/photo-1505691723518-36a36b4f1b68?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=abcd1234ef567890abcd1234ef567890',
-      'https://images.unsplash.com/photo-1475855581690-80accde3ae0a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1234abcd5678ef901234abcd5678ef90'
+      'https://images.unsplash.com/photo-1490806843531-1d0d36f7f1b9?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?auto=format&fit=crop&w=1200&q=80'
     ]
   },
   {
@@ -28,8 +28,8 @@ const sampleCompanies = [
     name: 'Proyectos Gamma',
     short: 'Gestión integral de proyectos',
     images: [
-      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3f4e5d6c7b8a9c0d1e2f3a4b5c6d7e8f',
-      'https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=99887766554433221100aabbccddeeff'
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80'
     ]
   }
 ];
