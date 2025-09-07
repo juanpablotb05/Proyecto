@@ -22,7 +22,7 @@ function Layout() {
   const centeredRoutes = ["/", "/Contact", "/UserProfile"];
   // Rutas que usan el estilo especial de login
   const loginRoutes = ["/Login.jsx"];
-  // Rutas sin Navbar
+  // Rutas sin Navbar (default)
   const noNavbarRoutes = [
     "/Login",
     "/password-recovery",
@@ -31,11 +31,15 @@ function Layout() {
     "/Dashboard",
     "/Simulator",
     "/AccountSettings",
-    "/Users"
+    "/Users",
+    "/Materiales"
   ];
 
   const isLoginPage = loginRoutes.includes(location.pathname);
   const showNavbar = !noNavbarRoutes.includes(location.pathname);
+
+  // Usar NavbarL específicamente en la ruta /Materiales
+  const showNavbarL = location.pathname === "/Materiales";
 
   // Clase principal del main
   const mainClass = isLoginPage
@@ -46,7 +50,7 @@ function Layout() {
 
   return (
     <div className="app-container">
-      {showNavbar && <Navbar />}
+      {showNavbarL ? <NavbarL /> : (showNavbar && <Navbar />)}
       <main className={mainClass}>
         <Routes>
           <Route path="/" element={<Inicio />} />
