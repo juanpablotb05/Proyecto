@@ -58,6 +58,7 @@ export function NavbarL({ children }) {
     if (v === "accountsettings") return "Configuración de la cuenta";
     if (v === "simulador") return "Simulador 3D";
     if (v === "materiales") return "Materiales";
+    if (v === "empresas") return "Empresas";
     if (v === "userprofile") return "Perfil de Usuario";
     if (v === "home") return "Inicio";
     return "Dashboard";
