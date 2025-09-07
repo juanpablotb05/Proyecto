@@ -196,7 +196,7 @@ export function NavbarL({ children }) {
           <Link to="/Dashboard" onClick={() => setIsMenuOpen(false)}>📊 Dashboard</Link>
           {/* Mostrar enlace 'Usuarios' solo para administradores */}
           {(() => {
-            const perm = permiso || (sessionStorage.getItem('permiso') || localStorage.getItem('permiso'));
+            const perm = permiso || sessionStorage.getItem('permiso');
             const isAdmin = perm === 'admin' || perm === '1' || perm === 1 || perm === '0';
             return isAdmin ? <Link to="/Users" onClick={() => setIsMenuOpen(false)}>👥 Usuarios</Link> : null;
           })()}
