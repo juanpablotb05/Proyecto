@@ -14,32 +14,21 @@ export function NavbarL({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔹 Intentar obtener los datos de perfil desde la API si hay token disponible.
-  // 🔹 Si la API no está disponible, se usan los valores en sessionStorage/localStorage como fallback.
+  // 🔹 Obtener datos de perfil únicamente desde la API (si hay token).
+  // 🔹 Ya no se usa localStorage; solo se utiliza sessionStorage temporal y el endpoint /me.
   useEffect(() => {
-    const photo = sessionStorage.getItem("profilePhoto") || localStorage.getItem("profilePhoto") || "";
-    const name = sessionStorage.getItem("nombre") || sessionStorage.getItem("profileName") || localStorage.getItem("profileName") || "A";
-    const storedPerm = sessionStorage.getItem("permiso") || localStorage.getItem("permiso") || null;
+    // Valores iniciales desde sessionStorage únicamente
+    const photo = sessionStorage.getItem("profilePhoto") || "";
+    const name = sessionStorage.getItem("nombre") || sessionStorage.getItem("profileName") || "A";
+    const storedPerm = sessionStorage.getItem("permiso") || null;
 
-    // Aplicar valores guardados inicialmente
     setProfilePhoto(photo);
     setProfileName(name);
     setPermiso(storedPerm);
 
-    // Si existe un token, intentar recuperar perfil desde la API
     const token = sessionStorage.getItem("token") || null;
-    if (!token) {
-      // No hay token: solo suscribe a cambios de storage y retorna
-      const onStorage = (e) => {
-        if (e.key === "profilePhoto") setProfilePhoto(e.newValue || "");
-        if (e.key === "profileName" || e.key === "nombre") setProfileName(e.newValue || "A");
-        if (e.key === "permiso") setPermiso(e.newValue || null);
-      };
-      window.addEventListener("storage", onStorage);
-      return () => window.removeEventListener("storage", onStorage);
-    }
+    if (!token) return; // sin token no intentamos llamar a la API
 
-    // Lógica para llamar al endpoint /me y actualizar perfil
     let mounted = true;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
@@ -61,13 +50,11 @@ export function NavbarL({ children }) {
         clearTimeout(timeout);
 
         if (!res.ok) {
-          // Si la API responde con error, no tratamos de bloquear la app; usamos los valores locales
           console.warn('No se pudo obtener perfil desde la API:', res.status);
           return;
         }
 
         const data = await res.json();
-        // Intentar leer varios campos que puedan representar el permiso/rol
         const permFromApi = data.permiso || data.role || data.roles || data.idPermiso || data.permission || data.permissionLevel || null;
         const nombreFromApi = data.name || data.nombre || data.firstName || data.username || data.email || null;
         const photoFromApi = data.photo || data.profilePhoto || data.avatar || null;
@@ -75,15 +62,15 @@ export function NavbarL({ children }) {
         if (mounted) {
           if (permFromApi) {
             setPermiso(permFromApi);
-            try { sessionStorage.setItem('permiso', permFromApi); localStorage.setItem('permiso', permFromApi); } catch (e) {}
+            try { sessionStorage.setItem('permiso', permFromApi); } catch (e) {}
           }
           if (nombreFromApi) {
             setProfileName(nombreFromApi);
-            try { sessionStorage.setItem('nombre', nombreFromApi); localStorage.setItem('profileName', nombreFromApi); } catch (e) {}
+            try { sessionStorage.setItem('nombre', nombreFromApi); } catch (e) {}
           }
           if (photoFromApi) {
             setProfilePhoto(photoFromApi);
-            try { sessionStorage.setItem('profilePhoto', photoFromApi); localStorage.setItem('profilePhoto', photoFromApi); } catch (e) {}
+            try { sessionStorage.setItem('profilePhoto', photoFromApi); } catch (e) {}
           }
         }
       } catch (err) {
@@ -92,19 +79,10 @@ export function NavbarL({ children }) {
       }
     })();
 
-    // Suscripción a cambios en localStorage para estar sincronizados entre pestañas
-    const onStorage = (e) => {
-      if (e.key === "profilePhoto") setProfilePhoto(e.newValue || "");
-      if (e.key === "profileName" || e.key === "nombre") setProfileName(e.newValue || "A");
-      if (e.key === "permiso") setPermiso(e.newValue || null);
-    };
-    window.addEventListener("storage", onStorage);
-
     return () => {
       mounted = false;
       controller.abort();
       clearTimeout(timeout);
-      window.removeEventListener("storage", onStorage);
     };
   }, []);
 
