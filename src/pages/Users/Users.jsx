@@ -13,15 +13,81 @@ const usuariosIniciales = [
 export default function Users() {
   const navigate = useNavigate();
 
-  // Redirigir si el usuario no tiene permiso
+  // Comprobar permisos llamando al endpoint /me usando el token.
+  // Si el usuario no es administrador, redirigir a Dashboard.
+  const [checking, setChecking] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
-    const perm = sessionStorage.getItem('permiso') || localStorage.getItem('permiso') || null;
-    const isAdmin = perm === 'admin' || perm === '1' || perm === 1 || perm === '0';
-    if (!isAdmin) {
-      // Evitar que usuarios normales accedan a la vista de Usuarios
-      alert('No tienes permisos para acceder a la sección de Usuarios');
-      navigate('/Dashboard');
+    let mounted = true;
+    const token = sessionStorage.getItem('token') || null;
+    if (!token) {
+      // Si no hay token, redirigir inmediatamente
+      alert('No autenticado. Por favor inicia sesión.');
+      navigate('/Login');
+      return;
     }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    (async () => {
+      try {
+        const base = import.meta.env.VITE_API_BASE || '';
+        const res = await fetch(`${base.replace(/\/+$/, "")}/me`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          signal: controller.signal
+        });
+
+        if (!mounted) return;
+        clearTimeout(timeout);
+
+        if (!res.ok) {
+          // Si la API devuelve error, mostramos mensaje y redirigimos
+          const msg = `No autorizado o error de servidor (${res.status})`;
+          setError(msg);
+          alert(msg);
+          navigate('/Dashboard');
+          return;
+        }
+
+        const data = await res.json();
+        // Intentar extraer permiso/rol
+        const permFromApi = data.permiso || data.role || data.roles || data.idPermiso || data.permission || data.permissionLevel || null;
+        const isAdmin = permFromApi === 'admin' || permFromApi === '1' || permFromApi === 1 || permFromApi === '0';
+
+        if (!isAdmin) {
+          alert('No tienes permisos para acceder a la sección de Usuarios');
+          navigate('/Dashboard');
+          return;
+        }
+
+        // Si es admin, continuar
+        if (mounted) setChecking(false);
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          setError('La solicitud tardó demasiado. Intenta de nuevo.');
+        } else {
+          setError('Error al verificar permisos');
+        }
+        console.error('Error verificando permisos:', err);
+        alert(error || 'No se pudo verificar permisos. Serás redirigido.');
+        navigate('/Dashboard');
+      } finally {
+        clearTimeout(timeout);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+      controller.abort();
+      clearTimeout(timeout);
+    };
   }, [navigate]);
 
   const [usuarios, setUsuarios] = useState(usuariosIniciales);
