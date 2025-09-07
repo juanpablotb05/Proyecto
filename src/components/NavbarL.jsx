@@ -33,52 +33,49 @@ export function NavbarL({ children }) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
 
-    (async () => {
-      try {
-        // Base fija de la API (se usa la URL desplegada)
-        const base = "https://envifo-java-backend-api-rest.onrender.com/api";
-        const res = await fetch(`${base.replace(/\/+$/, "")}/me`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          signal: controller.signal
-        });
+    // Usar fetch con then/catch para seguir el patrón del login proporcionado
+    const base = "https://envifo-java-backend-api-rest.onrender.com/api";
 
-        if (!mounted) return;
+    fetch(`${base.replace(/\/+$/, "")}/me`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      signal: controller.signal
+    })
+      .then((res) => {
         clearTimeout(timeout);
-
         if (!res.ok) {
           console.warn('No se pudo obtener perfil desde la API:', res.status);
-          return;
+          return null;
         }
-
-        const data = await res.json();
+        return res.json();
+      })
+      .then((data) => {
+        if (!mounted || !data) return;
         const permFromApi = data.permiso || data.role || data.roles || data.idPermiso || data.permission || data.permissionLevel || null;
         const nombreFromApi = data.name || data.nombre || data.firstName || data.username || data.email || null;
         const photoFromApi = data.photo || data.profilePhoto || data.avatar || null;
 
-        if (mounted) {
-          if (permFromApi) {
-            setPermiso(permFromApi);
-            try { sessionStorage.setItem('permiso', permFromApi); } catch (e) {}
-          }
-          if (nombreFromApi) {
-            setProfileName(nombreFromApi);
-            try { sessionStorage.setItem('nombre', nombreFromApi); } catch (e) {}
-          }
-          if (photoFromApi) {
-            setProfilePhoto(photoFromApi);
-            try { sessionStorage.setItem('profilePhoto', photoFromApi); } catch (e) {}
-          }
+        if (permFromApi) {
+          setPermiso(permFromApi);
+          try { sessionStorage.setItem('permiso', permFromApi); } catch (e) {}
         }
-      } catch (err) {
+        if (nombreFromApi) {
+          setProfileName(nombreFromApi);
+          try { sessionStorage.setItem('nombre', nombreFromApi); } catch (e) {}
+        }
+        if (photoFromApi) {
+          setProfilePhoto(photoFromApi);
+          try { sessionStorage.setItem('profilePhoto', photoFromApi); } catch (e) {}
+        }
+      })
+      .catch((err) => {
         if (err.name === 'AbortError') console.warn('Solicitud para obtener perfil abortada');
         else console.warn('Error al obtener perfil desde API:', err);
-      }
-    })();
+      });
 
     return () => {
       mounted = false;
