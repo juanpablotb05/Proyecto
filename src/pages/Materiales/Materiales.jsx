@@ -51,7 +51,7 @@ export default function Materiales() {
     if (!window.confirm("¿Eliminar esta textura?")) return;
     const lista = misTexturas.filter((t) => t.id !== id);
     setMisTexturas(lista);
-    guardarEnLocal(lista);
+    guardarEnSesion(lista);
     alert("Textura eliminada");
   };
 
