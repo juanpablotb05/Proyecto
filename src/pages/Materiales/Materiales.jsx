@@ -15,7 +15,7 @@ export default function Materiales() {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("misTexturas");
+      const stored = sessionStorage.getItem("misTexturas");
       if (stored) setMisTexturas(JSON.parse(stored));
     } catch (err) {
       console.warn("No se pudieron cargar las texturas:", err);
