@@ -1,4 +1,4 @@
-/* Panel Usuarios */
+/* Panel Usuarios - improved visuals */
 .panel-usuarios {
   min-height: 100vh;
   background: #f3f4f6; /* gray-50 */
@@ -49,6 +49,7 @@
   font-size: 14px;
   color: #111827;
 }
+.buscador input::placeholder { color: #9ca3af; }
 .buscador input:focus {
   outline: none;
   border-color: #60a5fa;
@@ -107,27 +108,39 @@
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
+
+/* Improve row contrast and hover */
+tbody tr:nth-child(even) { background: #fcfcfd; }
+.tabla-container tbody tr:hover { background: #f1f5f9; }
+
 .user-cell { font-weight: 600; color: #0f172a; }
 .user-email { display: block; font-size: 12px; color: #6b7280; }
 
 /* Selects and buttons in table */
 .tabla-container select {
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-}
-.actions-cell { display: flex; gap: 8px; }
-.action-btn {
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  min-width: 140px;
+  color: #111827;
+}
+.actions-cell { display: flex; gap: 8px; align-items: center; }
+.action-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
   border: 1px solid #e6e7ea;
   background: #ffffff;
   cursor: pointer;
   font-size: 13px;
+  color: #0f172a;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
 }
 .action-btn:hover { background: #f8fafc; }
-.action-btn.danger { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+.action-btn.danger { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+
+/* Make action buttons visually distinct and consistent width */
+.action-btn, .action-btn.danger { min-width: 90px; text-align: center; }
 
 /* Badges */
 .badge { display: inline-block; padding: 6px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
@@ -140,11 +153,11 @@
 @media (max-width: 900px) {
   .header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .buscador { flex-direction: column; align-items: stretch; }
-  .actions-cell { flex-direction: column; }
+  .actions-cell { flex-direction: column; align-items: stretch; }
   .tabla-container table { min-width: 600px; }
 }
 
 @media (max-width: 520px) {
   .tabla-container table { min-width: 480px; }
-  .action-btn { padding: 6px 8px; font-size: 12px; }
+  .action-btn { padding: 6px 8px; font-size: 12px; min-width: 70px; }
 }
