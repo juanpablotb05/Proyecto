@@ -75,6 +75,16 @@ export default function Dashboard() {
               <button className="upload-btn">Agregar contenido</button>
             </div>
           </div>
+
+          <div className="upload-container">
+            <div className="upload-area">
+              <div className="upload-icon">🏢</div>
+              <h3>Empresas</h3>
+              <p>Sube información o archivos relacionados con empresas</p>
+              <input type="file" multiple onChange={handleFileUpload} className="file-input" />
+              <button className="upload-btn">Agregar contenido</button>
+            </div>
+          </div>
         </div>
       </div>
     </Layout>
