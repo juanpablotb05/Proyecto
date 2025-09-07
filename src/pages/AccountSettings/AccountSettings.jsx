@@ -46,7 +46,7 @@ export default function AccountSettings() {
     setFotoUrl("");
     if (fileInputRef.current) fileInputRef.current.value = "";
     try {
-      localStorage.removeItem("profilePhoto");
+      sessionStorage.removeItem("profilePhoto");
     } catch (err) {}
   };
 
