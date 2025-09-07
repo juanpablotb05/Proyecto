@@ -69,15 +69,16 @@ const PasswordRecovery = () => {
       });
     }, 1000);
 
-    const emailForgot = localStorage.getItem('emailRecuperacion');
+    const emailForgot = sessionStorage.getItem('emailRecuperacion');
+    const base = "https://envifo-java-backend-api-rest.onrender.com/api";
 
-  fetch(`http://localhost:8080/api/recuperacion/solicitar?email=${encodeURIComponent(emailForgot)}`, {
+  fetch(`${base.replace(/\/+$/, "")}/recuperacion/solicitar?email=${encodeURIComponent(emailForgot)}`, {
     method: "POST",
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
     },
-  }) 
+  })
       .then((res) => {
         if (!res.ok) throw new Error("Correo inválido.");
         return res.text();
