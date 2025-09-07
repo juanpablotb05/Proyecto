@@ -33,9 +33,9 @@ export default function AccountSettings() {
         const result = ev.target.result;
         setFotoUrl(result);
         try {
-          localStorage.setItem("profilePhoto", result);
+          sessionStorage.setItem("profilePhoto", result);
         } catch (err) {
-          console.warn("No se pudo guardar la foto en localStorage", err);
+          console.warn("No se pudo guardar la foto en sessionStorage", err);
         }
       };
       reader.readAsDataURL(file);
