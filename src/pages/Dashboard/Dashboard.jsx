@@ -7,11 +7,11 @@ import { NavbarL } from "../../components/NavbarL";
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  // ✅ Protección de ruta
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (!token) navigate("/Login");
-  }, [navigate]);
+  // Protección de ruta temporalmente desactivada para desarrollo
+  // useEffect(() => {
+  //   const token = sessionStorage.getItem("token");
+  //   if (!token) navigate("/Login");
+  // }, [navigate]);
 
   const handleFileUpload = (event) => {
     const files = event.target.files;
