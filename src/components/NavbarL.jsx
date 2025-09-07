@@ -13,14 +13,21 @@ export function NavbarL({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔹 Datos del perfil desde localStorage
+  // 🔹 Datos del perfil desde sessionStorage (preferido) y fallback a localStorage
   useEffect(() => {
-    setProfilePhoto(localStorage.getItem("profilePhoto") || "");
-    setProfileName(localStorage.getItem("profileName") || "A");
+    // Prefer sessionStorage values set at login, fallback to localStorage for persistent profile
+    const photo = sessionStorage.getItem("profilePhoto") || localStorage.getItem("profilePhoto") || "";
+    const name = sessionStorage.getItem("nombre") || sessionStorage.getItem("profileName") || localStorage.getItem("profileName") || "A";
+
+    setProfilePhoto(photo);
+    setProfileName(name);
 
     const onStorage = (e) => {
+      // localStorage changes trigger this event across windows/tabs
       if (e.key === "profilePhoto") setProfilePhoto(e.newValue || "");
       if (e.key === "profileName") setProfileName(e.newValue || "A");
+      // Also handle possible 'nombre' key in localStorage
+      if (e.key === "nombre") setProfileName(e.newValue || "A");
     };
 
     window.addEventListener("storage", onStorage);
