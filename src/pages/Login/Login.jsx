@@ -115,76 +115,73 @@ const Login = () => {
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    const base = "https://envifo-java-backend-api-rest.onrender.com/api";
 
-    try {
-      const res = await fetch("https://envifo-java-backend-api-rest.onrender.com/api/login", {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-        signal: controller.signal,
+    fetch(`${base.replace(/\/+$/, "")}/login`, {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+      signal: controller.signal,
+    })
+      .then((res) => {
+        clearTimeout(timeout);
+        if (!res.ok) {
+          return res.text().then((t) => { throw new Error(t || 'Error de autenticación'); });
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const token = data && (data.accessToken || data.token);
+        if (!token) throw new Error('Token no recibido');
+        const tokenData = jwtDecode(token);
+
+        // Save token and profile info in sessionStorage
+        sessionStorage.token = token;
+        sessionStorage.email = tokenData.sub;
+        sessionStorage.nombre = tokenData.name || "Sin nombre";
+        sessionStorage.permiso = tokenData.idPermiso;
+        sessionStorage.usuario = tokenData.idUsuario;
+
+        try {
+          if (tokenData.name) sessionStorage.setItem('nombre', tokenData.name);
+          if (tokenData.photo) sessionStorage.setItem('profilePhoto', tokenData.photo);
+          if (tokenData.idPermiso) sessionStorage.setItem('permiso', tokenData.idPermiso);
+        } catch (e) {
+          console.warn('No se pudieron guardar datos de sesión');
+        }
+
+        setIntentos(3);
+        setMensaje("");
+        navigate("/Dashboard");
+      })
+      .catch((err) => {
+        console.error('Login error:', err);
+        const nuevosIntentos = intentos - 1;
+        setIntentos(nuevosIntentos);
+
+        if (err.name === 'AbortError') {
+          setMensaje('La solicitud tardó demasiado. Intenta de nuevo.');
+        } else if (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError') || err.message.includes('Token no recibido'))) {
+          setMensaje('No se pudo conectar al servidor. Intenta más tarde.');
+        } else {
+          setMensaje(`Credenciales inválidas. Te quedan: ${nuevosIntentos} intentos.`);
+        }
+
+        if (nuevosIntentos <= 0) {
+          alert("Número máximo de intentos alcanzado.");
+          if (botonRef.current) botonRef.current.style.display = "none";
+          if (userLogRef.current) userLogRef.current.disabled = true;
+          if (passLogRef.current) passLogRef.current.disabled = true;
+        }
+      })
+      .finally(() => {
+        clearTimeout(timeout);
+        if (userLogRef.current) userLogRef.current.value = "";
+        if (passLogRef.current) passLogRef.current.value = "";
       });
-
-      clearTimeout(timeout);
-
-      if (!res.ok) {
-        // try to parse error message
-        let text = '';
-        try { text = await res.text(); } catch (e) {}
-        throw new Error(text || 'Error de autenticación');
-      }
-
-      const data = await res.json();
-      const token = data && (data.accessToken || data.token);
-      if (!token) throw new Error('Token no recibido');
-
-      const tokenData = jwtDecode(token);
-
-      // Save token and profile info in sessionStorage
-      sessionStorage.token = token;
-      sessionStorage.email = tokenData.sub;
-      sessionStorage.nombre = tokenData.name || "Sin nombre";
-      sessionStorage.permiso = tokenData.idPermiso;
-      sessionStorage.usuario = tokenData.idUsuario;
-
-      // Guardar datos de perfil en sessionStorage (temporal por sesión)
-      try {
-        if (tokenData.name) sessionStorage.setItem('nombre', tokenData.name);
-        if (tokenData.photo) sessionStorage.setItem('profilePhoto', tokenData.photo);
-        if (tokenData.idPermiso) sessionStorage.setItem('permiso', tokenData.idPermiso);
-      } catch (e) {
-        console.warn('No se pudieron guardar datos de sesión');
-      }
-
-      setIntentos(3);
-      setMensaje("");
-      navigate("/Dashboard");
-    } catch (err) {
-      console.error('Login error:', err);
-      const nuevosIntentos = intentos - 1;
-      setIntentos(nuevosIntentos);
-
-      if (err.name === 'AbortError') {
-        setMensaje('La solicitud tardó demasiado. Intenta de nuevo.');
-      } else if (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError') || err.message.includes('Token no recibido'))) {
-        setMensaje('No se pudo conectar al servidor. Intenta más tarde.');
-      } else {
-        setMensaje(`Credenciales inválidas. Te quedan: ${nuevosIntentos} intentos.`);
-      }
-
-      if (nuevosIntentos <= 0) {
-        alert("Número máximo de intentos alcanzado.");
-        if (botonRef.current) botonRef.current.style.display = "none";
-        if (userLogRef.current) userLogRef.current.disabled = true;
-        if (passLogRef.current) passLogRef.current.disabled = true;
-      }
-    } finally {
-      clearTimeout(timeout);
-      if (userLogRef.current) userLogRef.current.value = "";
-      if (passLogRef.current) passLogRef.current.value = "";
-    }
   };
 
   return (
