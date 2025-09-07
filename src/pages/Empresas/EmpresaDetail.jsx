@@ -55,7 +55,7 @@ export default function EmpresaDetail(){
     <div className="empresa-detail">
       <div className="detail-top">
         <div className="carousel">
-          <button className="back-btn" onClick={() => navigate(-1)} aria-label="Volver">←</button>
+          <button className="back-btn" onClick={() => navigate('/Empresas')} aria-label="Volver">← Volver</button>
           <button className="chev left" onClick={prev}>‹</button>
           <img src={company.images[index]} alt={`${company.name} ${index+1}`} />
           <button className="chev right" onClick={next}>›</button>
