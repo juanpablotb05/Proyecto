@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import logo from '../../assets/ENVIFO.png';
 import { Layout } from "../../components/Layout";
-import { HiOutlineLogin } from "react-icons/hi";
 
 const Login = () => {
   const [isRightPanelActive, setRightPanelActive] = useState(false);
@@ -12,6 +12,7 @@ const Login = () => {
   const [tipoUsuario, setTipoUsuario] = useState("Usuario");
   const navigate = useNavigate();
   const MOCK_LOGIN = false; // set to true to bypass network during development
+
   const userRef = useRef(null);
   const passRef = useRef(null);
   const userLogRef = useRef(null);
@@ -66,13 +67,13 @@ const Login = () => {
       });
   };
 
-  const loginAction = async (e) => {
+  const loginAction = (e) => {
     e.preventDefault();
     if (intentos <= 0) return;
 
-    const usuarioLog = (userLogRef.current && userLogRef.current.value || '').trim();
+    const usuarioLog = userLogRef.current && userLogRef.current.value ? userLogRef.current.value.trim() : '';
+    const passwordLog = passLogRef.current && passLogRef.current.value ? passLogRef.current.value.trim() : '';
 
-    // If mocking is enabled, bypass network and simulate successful login
     if (MOCK_LOGIN) {
       const fakeToken = 'dev-token';
       sessionStorage.token = fakeToken;
@@ -80,15 +81,6 @@ const Login = () => {
       sessionStorage.nombre = 'Dev User';
       sessionStorage.permiso = 'admin';
       sessionStorage.usuario = '0';
-
-      // Guardar perfil de mock en sessionStorage únicamente
-      try {
-        sessionStorage.setItem('nombre', 'Dev User');
-        sessionStorage.setItem('profilePhoto', '');
-        sessionStorage.setItem('permiso', 'admin');
-      } catch (e) {
-        // ignore
-      }
 
       setIntentos(3);
       setMensaje('');
@@ -99,13 +91,10 @@ const Login = () => {
       return;
     }
 
-    // Real network login (kept for future use)
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
       setMensaje('Sin conexión. Por favor verifica tu red.');
       return;
     }
-
-    const passwordLog = (passLogRef.current && passLogRef.current.value || '').trim();
 
     const loginData = {
       email: usuarioLog,
@@ -135,10 +124,13 @@ const Login = () => {
       .then((data) => {
         const token = data && (data.accessToken || data.token);
         if (!token) throw new Error('Token no recibido');
+        const tokenData = jwtDecode(token);
 
-        // Guardar únicamente el token en sessionStorage. El perfil y permisos se obtienen
-        // desde el endpoint /me en NavbarL y otras vistas cuando sea necesario.
         sessionStorage.token = token;
+        sessionStorage.email = tokenData.sub;
+        sessionStorage.nombre = tokenData.name || "Sin nombre";
+        sessionStorage.permiso = tokenData.idPermiso;
+        sessionStorage.usuario = tokenData.idUsuario;
 
         setIntentos(3);
         setMensaje("");
@@ -173,34 +165,28 @@ const Login = () => {
 
   return (
     <Layout>
-      <div className={`container ${isRightPanelActive ? "right-panel-active" : ""}`}>
-        {/* REGISTRO */}
+      <div className={`container ${isRightPanelActive ? 'right-panel-active' : ''}`}>
         <div className="form-container sign-up-container">
           <form>
             <h1>Crear cuenta</h1>
-            <div className="tipo-usuario-btn-group">
-              <button
-                type="button"
-                className={`tipo-usuario-btn ${tipoUsuario === "Usuario" ? "active" : ""}`}
-                onClick={() => setTipoUsuario("Usuario")}
-              >
-                Usuario
-              </button>
-              <button
-                type="button"
-                className={`tipo-usuario-btn ${tipoUsuario === "Empresa" ? "active" : ""}`}
-                onClick={() => setTipoUsuario("Empresa")}
-              >
-                Empresa
-              </button>
+            <div className="radio-section">
+              <div className="radio-group">
+                <p>Tipo</p>
+                <label>
+                  <input type="radio" name="tipo" checked={tipoUsuario === 'Usuario'} onChange={() => setTipoUsuario('Usuario')} /> Usuario
+                </label>
+                <label>
+                  <input type="radio" name="tipo" checked={tipoUsuario === 'Empresa'} onChange={() => setTipoUsuario('Empresa')} /> Empresa
+                </label>
+              </div>
             </div>
 
             {tipoUsuario === "Usuario" && (
               <>
-                <input type="text" name="Nombre" ref={nameUserRef} placeholder="Nombre" />
-                <input type="text" name="Lastname" ref={lastNameUserRef} placeholder="Apellido" />
-                <input type="email" name="email" ref={emailUserRef} placeholder="Correo electrónico" />
-                <input type="password" ref={passUserRef} placeholder="Contraseña" name="password" />
+                <input type="text" ref={nameUserRef} placeholder="Nombre" />
+                <input type="text" ref={lastNameUserRef} placeholder="Apellido" />
+                <input type="email" ref={emailUserRef} placeholder="Correo electrónico" />
+                <input type="password" ref={passUserRef} placeholder="Contraseña" />
                 <button type="button" className="button" onClick={registrarUsuario}>
                   Registrar
                 </button>
@@ -222,50 +208,31 @@ const Login = () => {
           </form>
         </div>
 
-        {/* LOGIN */}
         <div className="form-container sign-in-container">
-          <div style={{ position: "absolute", top: "10px", left: "10px" }}>
-            <Link to="/" className="Login-btn" aria-label="Volver">
-              <HiOutlineLogin size={28} color="black" />
-            </Link>
-          </div>
-
           <form onSubmit={loginAction}>
             <h1>Iniciar sesión</h1>
-            <div className="radio-group-container">
-              <div className="radio-group"></div>
-            </div>
+            <p>Para ingresar, inicie sesión con su información.</p>
             <input type="email" ref={userLogRef} placeholder="Email" />
             <input type="password" ref={passLogRef} placeholder="Password" />
-            <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
-            <button type="submit" className="button" ref={botonRef}>
-              Login
+            <a href="/forgot-password">¿Olvidaste tu contraseña?</a>
+            <button type="submit" className="button">
+              <HiOutlineLogin /> Login
             </button>
-            <p className="mensaje-error">{mensaje}</p>
+            {mensaje && <p className="error">{mensaje}</p>}
           </form>
         </div>
 
-        {/* OVERLAY */}
         <div className="overlay-container">
           <div className="overlay">
             <div className="overlay-panel overlay-left">
-              <div className="logo-section">
-                <img src={logo} alt="Envifo Logo" className="logo" onClick={() => navigate('/')} />
-              </div>
-              <p>Para ingresar, inicie sesión con su información.</p>
-              <button className="ghost" onClick={handleSignIn}>
-                Login
-              </button>
+              <h1>Bienvenido de nuevo!</h1>
+              <p>Para mantener conectados con nosotros, por favor inicia sesión con tus datos personales</p>
+              <button className="ghost" onClick={handleSignIn}>Login</button>
             </div>
             <div className="overlay-panel overlay-right">
-              <div className="logo-section">
-                <img src={logo} alt="Envifo Logo" className="logo" onClick={() => navigate('/')} />
-              </div>
-              <h1>¡Bienvenido!</h1>
+              <h1>Crea tu cuenta</h1>
               <p>Registre su información para ingresar al aplicativo.</p>
-              <button className="ghost" onClick={handleSignUp}>
-                Registrar
-              </button>
+              <button className="ghost" onClick={handleSignUp}>Registrar</button>
             </div>
           </div>
         </div>
