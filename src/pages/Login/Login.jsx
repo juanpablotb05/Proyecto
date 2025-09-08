@@ -209,9 +209,9 @@ const Login = () => {
 
             {tipoUsuario === "Empresa" && (
               <>
-                <input type="text" name="name" ref={companyNameRef} placeholder="Nombre empresa" />
-                <input type="text" name="address" ref={companyAddressRef} placeholder="Dirección" />
-                <input type="text" name="phoneCompany" ref={companyPhoneRef} placeholder="Teléfono empresa" />
+                <input type="text" name="name" placeholder="Nombre empresa" />
+                <input type="text" name="address" placeholder="Dirección" />
+                <input type="text" name="phoneCompany" placeholder="Teléfono empresa" />
                 <input type="email" name="emailCompany" ref={userRef} placeholder="Correo electrónico empresa" />
                 <input type="password" ref={passRef} placeholder="Contraseña" name="password" />
                 <button type="button" className="button" onClick={registrarUsuario}>
