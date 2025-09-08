@@ -22,14 +22,16 @@ const ForgotPassword = () => {
 
   const handleContinue = () => {
     console.log('Correo electrónico ingresado:', email);
-    localStorage.setItem('emailRecuperacion', email);
+    // Guardar email para la recuperación en sessionStorage
+    sessionStorage.setItem('emailRecuperacion', email);
     navigate('/password-recovery');
   };
 
 const forgotAction = () => {
   const emailForgot = email.trim();
+  const base = "https://envifo-java-backend-api-rest.onrender.com/api";
 
-  fetch(`http://localhost:8080/api/recuperacion/solicitar?email=${encodeURIComponent(emailForgot)}`, {
+  fetch(`${base.replace(/\/+$/, "")}/recuperacion/solicitar?email=${encodeURIComponent(emailForgot)}`, {
     method: "POST",
     headers: {
       "Accept": "application/json",
@@ -40,7 +42,7 @@ const forgotAction = () => {
     })
     .catch((err) => {
       console.error(err);
-      setMensaje(`Correo inválido.`);
+      alert('Hubo un problema al enviar el correo de recuperación.');
     });
 };
 

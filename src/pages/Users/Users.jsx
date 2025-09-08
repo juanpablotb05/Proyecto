@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Users.css"; // Importa estilos extra
 import { NavbarL } from "../../components/NavbarL";
 
@@ -10,6 +11,83 @@ const usuariosIniciales = [
 ];
 
 export default function Users() {
+  const navigate = useNavigate();
+
+  // Comprobar permisos llamando al endpoint /me usando el token.
+  // Si el usuario no es administrador, redirigir a Dashboard.
+  const [checking, setChecking] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const token = sessionStorage.getItem('token') || null;
+    if (!token) {
+      // Si no hay token, redirigir inmediatamente
+      alert('No autenticado. Por favor inicia sesión.');
+      navigate('/Login');
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    // Usar fetch con then/catch siguiendo el patrón del login
+    const base = "https://envifo-java-backend-api-rest.onrender.com/api";
+
+    fetch(`${base.replace(/\/+$/, "")}/me`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      signal: controller.signal
+    })
+      .then((res) => {
+        clearTimeout(timeout);
+        if (!res.ok) {
+          const msg = `No autorizado o error de servidor (${res.status})`;
+          setError(msg);
+          alert(msg);
+          navigate('/Dashboard');
+          return null;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!mounted || !data) return;
+        const permFromApi = data.permiso || data.role || data.roles || data.idPermiso || data.permission || data.permissionLevel || null;
+        const isAdmin = permFromApi === 'admin' || permFromApi === '1' || permFromApi === 1 || permFromApi === '0';
+        if (!isAdmin) {
+          alert('No tienes permisos para acceder a la sección de Usuarios');
+          navigate('/Dashboard');
+          return;
+        }
+        if (mounted) setChecking(false);
+      })
+      .catch((err) => {
+        let errMsg;
+        if (err.name === 'AbortError') {
+          errMsg = 'La solicitud tardó demasiado. Intenta de nuevo.';
+        } else {
+          errMsg = 'Error al verificar permisos';
+        }
+        setError(errMsg);
+        console.error('Error verificando permisos:', err);
+        alert(errMsg + '. Serás redirigido.');
+        navigate('/Dashboard');
+      })
+      .finally(() => {
+        clearTimeout(timeout);
+      });
+
+    return () => {
+      mounted = false;
+      controller.abort();
+      clearTimeout(timeout);
+    };
+  }, [navigate]);
+
   const [usuarios, setUsuarios] = useState(usuariosIniciales);
   const [busqueda, setBusqueda] = useState("");
 
@@ -66,6 +144,16 @@ export default function Users() {
       alert("Usuario agregado exitosamente");
     }
   };
+
+  if (checking) {
+    return (
+      <NavbarL>
+        <div className="panel-usuarios">
+          <p>Cargando permisos...</p>
+        </div>
+      </NavbarL>
+    );
+  }
 
   return (
     <NavbarL>

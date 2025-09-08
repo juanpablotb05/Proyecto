@@ -5,6 +5,7 @@ import "./NavbarL.css";
 export function NavbarL({ children }) {
   const [profilePhoto, setProfilePhoto] = useState("");
   const [profileName, setProfileName] = useState("A");
+  const [permiso, setPermiso] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false); // menú de perfil
   const [isMenuOpen, setIsMenuOpen] = useState(false); // menú lateral
   const [vista, setVista] = useState("dashboard");
@@ -13,18 +14,74 @@ export function NavbarL({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔹 Datos del perfil desde localStorage
+  // 🔹 Obtener datos de perfil únicamente desde la API (si hay token).
+  // 🔹 Ya no se usa localStorage; solo se utiliza sessionStorage temporal y el endpoint /me.
   useEffect(() => {
-    setProfilePhoto(localStorage.getItem("profilePhoto") || "");
-    setProfileName(localStorage.getItem("profileName") || "A");
+    // Valores iniciales desde sessionStorage únicamente
+    const photo = sessionStorage.getItem("profilePhoto") || "";
+    const name = sessionStorage.getItem("nombre") || sessionStorage.getItem("profileName") || "A";
+    const storedPerm = sessionStorage.getItem("permiso") || null;
 
-    const onStorage = (e) => {
-      if (e.key === "profilePhoto") setProfilePhoto(e.newValue || "");
-      if (e.key === "profileName") setProfileName(e.newValue || "A");
+    setProfilePhoto(photo);
+    setProfileName(name);
+    setPermiso(storedPerm);
+
+    const token = sessionStorage.getItem("token") || null;
+    if (!token) return; // sin token no intentamos llamar a la API
+
+    let mounted = true;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    // Usar fetch con then/catch para seguir el patrón del login proporcionado
+    const base = "https://envifo-java-backend-api-rest.onrender.com/api";
+
+    fetch(`${base.replace(/\/+$/, "")}/me`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      signal: controller.signal
+    })
+      .then((res) => {
+        clearTimeout(timeout);
+        if (!res.ok) {
+          console.warn('No se pudo obtener perfil desde la API:', res.status);
+          return null;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!mounted || !data) return;
+        const permFromApi = data.permiso || data.role || data.roles || data.idPermiso || data.permission || data.permissionLevel || null;
+        const nombreFromApi = data.name || data.nombre || data.firstName || data.username || data.email || null;
+        const photoFromApi = data.photo || data.profilePhoto || data.avatar || null;
+
+        if (permFromApi) {
+          setPermiso(permFromApi);
+          try { sessionStorage.setItem('permiso', permFromApi); } catch (e) {}
+        }
+        if (nombreFromApi) {
+          setProfileName(nombreFromApi);
+          try { sessionStorage.setItem('nombre', nombreFromApi); } catch (e) {}
+        }
+        if (photoFromApi) {
+          setProfilePhoto(photoFromApi);
+          try { sessionStorage.setItem('profilePhoto', photoFromApi); } catch (e) {}
+        }
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') console.warn('Solicitud para obtener perfil abortada');
+        else console.warn('Error al obtener perfil desde API:', err);
+      });
+
+    return () => {
+      mounted = false;
+      controller.abort();
+      clearTimeout(timeout);
     };
-
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   // 🔹 Cierra menú de perfil si clic afuera
@@ -135,7 +192,12 @@ export function NavbarL({ children }) {
         </div>
         <div className="side">
           <Link to="/Dashboard" onClick={() => setIsMenuOpen(false)}>📊 Dashboard</Link>
-          <Link to="/Users" onClick={() => setIsMenuOpen(false)}>👥 Usuarios</Link>
+          {/* Mostrar enlace 'Usuarios' solo para administradores */}
+          {(() => {
+            const perm = permiso || sessionStorage.getItem('permiso');
+            const isAdmin = perm === 'admin' || perm === '1' || perm === 1 || perm === '0';
+            return isAdmin ? <Link to="/Users" onClick={() => setIsMenuOpen(false)}>👥 Usuarios</Link> : null;
+          })()}
           <a href="#projects" onClick={() => setVista("proyectos")}>🗂️ Proyectos</a>
           <Link to="/Materiales" onClick={() => setIsMenuOpen(false)}>📋 Materiales</Link>
           <Link to="/Empresas" onClick={() => setIsMenuOpen(false)}>🏢 Empresas</Link>

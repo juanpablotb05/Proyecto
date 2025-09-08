@@ -17,10 +17,11 @@ export default function AccountSettings() {
   const [fotoUrl, setFotoUrl] = useState("");
   const fileInputRef = useRef(null);
 
+  // Cargar foto y nombre desde sessionStorage (solo por sesión)
   useEffect(() => {
-    const stored = localStorage.getItem("profilePhoto");
+    const stored = sessionStorage.getItem("profilePhoto");
     if (stored) setFotoUrl(stored);
-    const storedName = localStorage.getItem("profileName");
+    const storedName = sessionStorage.getItem("profileName") || sessionStorage.getItem("nombre");
     if (storedName) setUsuario((u) => ({ ...u, nombre: storedName }));
   }, []);
 
@@ -32,9 +33,9 @@ export default function AccountSettings() {
         const result = ev.target.result;
         setFotoUrl(result);
         try {
-          localStorage.setItem("profilePhoto", result);
+          sessionStorage.setItem("profilePhoto", result);
         } catch (err) {
-          console.warn("No se pudo guardar la foto en localStorage", err);
+          console.warn("No se pudo guardar la foto en sessionStorage", err);
         }
       };
       reader.readAsDataURL(file);
@@ -45,7 +46,7 @@ export default function AccountSettings() {
     setFotoUrl("");
     if (fileInputRef.current) fileInputRef.current.value = "";
     try {
-      localStorage.removeItem("profilePhoto");
+      sessionStorage.removeItem("profilePhoto");
     } catch (err) {}
   };
 
@@ -55,7 +56,8 @@ export default function AccountSettings() {
     if (nombre && email) {
       setUsuario((u) => ({ ...u, nombre, email }));
       try {
-        localStorage.setItem("profileName", nombre);
+        sessionStorage.setItem("profileName", nombre);
+        sessionStorage.setItem("nombre", nombre);
       } catch (err) {}
     }
   };

@@ -34,7 +34,9 @@ const PasswordRecovery = () => {
   const manejarVerificar = () => {
     const token = codigoVerificacion.trim();
 
-    fetch(`http://localhost:8080/api/recuperacion/validar?token=${encodeURIComponent(token)}`, {
+    const base = "https://envifo-java-backend-api-rest.onrender.com/api";
+
+    fetch(`${base.replace(/\/+$/, "")}/recuperacion/validar?token=${encodeURIComponent(token)}`, {
       method: "GET",
       headers: {
         "Accept": "application/json"
@@ -69,15 +71,16 @@ const PasswordRecovery = () => {
       });
     }, 1000);
 
-    const emailForgot = localStorage.getItem('emailRecuperacion');
+    const emailForgot = sessionStorage.getItem('emailRecuperacion');
+    const base = "https://envifo-java-backend-api-rest.onrender.com/api";
 
-  fetch(`http://localhost:8080/api/recuperacion/solicitar?email=${encodeURIComponent(emailForgot)}`, {
+  fetch(`${base.replace(/\/+$/, "")}/recuperacion/solicitar?email=${encodeURIComponent(emailForgot)}`, {
     method: "POST",
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
     },
-  }) 
+  })
       .then((res) => {
         if (!res.ok) throw new Error("Correo inválido.");
         return res.text();

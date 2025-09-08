@@ -15,18 +15,18 @@ export default function Materiales() {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("misTexturas");
+      const stored = sessionStorage.getItem("misTexturas");
       if (stored) setMisTexturas(JSON.parse(stored));
     } catch (err) {
       console.warn("No se pudieron cargar las texturas:", err);
     }
   }, []);
 
-  const guardarEnLocal = (arr) => {
+  const guardarEnSesion = (arr) => {
     try {
-      localStorage.setItem("misTexturas", JSON.stringify(arr));
+      sessionStorage.setItem("misTexturas", JSON.stringify(arr));
     } catch (err) {
-      console.warn("No se pudo guardar en localStorage", err);
+      console.warn("No se pudo guardar en sessionStorage", err);
     }
   };
 
@@ -39,7 +39,7 @@ export default function Materiales() {
       const nueva = { id: Date.now().toString(), nombre: file.name, data };
       const nuevaLista = [nueva, ...misTexturas];
       setMisTexturas(nuevaLista);
-      guardarEnLocal(nuevaLista);
+      guardarEnSesion(nuevaLista);
       alert("Textura subida");
     };
     reader.readAsDataURL(file);
@@ -51,7 +51,7 @@ export default function Materiales() {
     if (!window.confirm("¿Eliminar esta textura?")) return;
     const lista = misTexturas.filter((t) => t.id !== id);
     setMisTexturas(lista);
-    guardarEnLocal(lista);
+    guardarEnSesion(lista);
     alert("Textura eliminada");
   };
 
