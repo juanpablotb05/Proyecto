@@ -336,57 +336,30 @@ footer p {
   accent-color: #ff6600;
 }
 
-/* Nuevo control segmentado para seleccionar tipo de usuario */
-.segmented {
-  display: inline-flex;
-  background: linear-gradient(90deg, rgba(255,102,0,0.1), rgba(255,102,0,0.06));
-  border-radius: 999px;
-  padding: 6px;
-  gap: 6px;
-  align-items: center;
-  justify-content: center;
-  margin: 18px 0;
+.tipo-usuario-btn-group {
+  display: flex;
+  gap: 10px; /* Espacio entre botones */
+  justify-content: center; /* Centrado horizontal */
+  margin: 20px 0;
 }
 
-.segmented-input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.segmented-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: 999px;
+.tipo-usuario-btn {
+  border-radius: 20px;
+  border: 1px solid #ff6600;
+  background-color: #ff6600;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 30px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   cursor: pointer;
-  user-select: none;
-  background: transparent;
-  color: #333;
-  font-weight: 700;
-  font-size: 14px;
-  transition: all 160ms ease;
-  box-shadow: none;
+  transition: transform 80ms ease-in;
 }
 
-.segmented-label .segmented-emoji {
-  font-size: 18px;
+.tipo-usuario-btn.active {
+  background-color: #cc5200; /* O un color distinto para activo */
 }
-
-.segmented-label.checked {
-  background: linear-gradient(90deg, #ff7a18 0%, #ff6600 100%);
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(255,102,0,0.25);
-}
-
-.segmented-label:hover {
-  transform: translateY(-1px);
-}
-
-/* Mantener compatibilidad con estilos previos (oculto si existe) */
-.tipo-usuario-btn-group { display: none; }
 
 .page-wrapper {
   height: 100vh;
