@@ -21,10 +21,6 @@ const Login = () => {
   const lastNameUserRef = useRef(null);
   const emailUserRef = useRef(null);
   const passUserRef = useRef(null);
-  // refs for company registration
-  const companyNameRef = useRef(null);
-  const companyAddressRef = useRef(null);
-  const companyPhoneRef = useRef(null);
 
   const handleSignUp = () => setRightPanelActive(true);
   const handleSignIn = () => setRightPanelActive(false);
