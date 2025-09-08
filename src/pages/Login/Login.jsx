@@ -178,35 +178,21 @@ const Login = () => {
         <div className="form-container sign-up-container">
           <form>
             <h1>Crear cuenta</h1>
-            {/* Selector mejorado: control segmentado accesible */}
-            <div className="segmented" role="tablist" aria-label="Tipo de cuenta">
-              <input
-                type="radio"
-                id="tipo-usuario-usuario"
-                name="tipoUsuario"
-                value="Usuario"
-                checked={tipoUsuario === "Usuario"}
-                onChange={() => setTipoUsuario("Usuario")}
-                className="segmented-input"
-              />
-              <label htmlFor="tipo-usuario-usuario" className={`segmented-label ${tipoUsuario === "Usuario" ? "checked" : ""}`}>
-                <span className="segmented-emoji">👤</span>
-                <span className="segmented-text">Usuario</span>
-              </label>
-
-              <input
-                type="radio"
-                id="tipo-usuario-empresa"
-                name="tipoUsuario"
-                value="Empresa"
-                checked={tipoUsuario === "Empresa"}
-                onChange={() => setTipoUsuario("Empresa")}
-                className="segmented-input"
-              />
-              <label htmlFor="tipo-usuario-empresa" className={`segmented-label ${tipoUsuario === "Empresa" ? "checked" : ""}`}>
-                <span className="segmented-emoji">🏢</span>
-                <span className="segmented-text">Empresa</span>
-              </label>
+            <div className="tipo-usuario-btn-group">
+              <button
+                type="button"
+                className={`tipo-usuario-btn ${tipoUsuario === "Usuario" ? "active" : ""}`}
+                onClick={() => setTipoUsuario("Usuario")}
+              >
+                Usuario
+              </button>
+              <button
+                type="button"
+                className={`tipo-usuario-btn ${tipoUsuario === "Empresa" ? "active" : ""}`}
+                onClick={() => setTipoUsuario("Empresa")}
+              >
+                Empresa
+              </button>
             </div>
 
             {tipoUsuario === "Usuario" && (
