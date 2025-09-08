@@ -26,105 +26,43 @@ const Login = () => {
   const handleSignIn = () => setRightPanelActive(false);
 
   const registrarUsuario = () => {
-    // Dependiendo del tipo (Usuario o Empresa) recolectar los campos adecuados
-    const baseUrl = "https://envifo-java-backend-api-rest.onrender.com/api";
+    const name = nameUserRef.current && nameUserRef.current.value ? nameUserRef.current.value.trim() : '';
+    const surName = lastNameUserRef.current && lastNameUserRef.current.value ? lastNameUserRef.current.value.trim() : '';
+    const emailReg = emailUserRef.current && emailUserRef.current.value ? emailUserRef.current.value.trim() : '';
+    const passwordReg = passUserRef.current && passUserRef.current.value ? passUserRef.current.value.trim() : '';
 
-    if (tipoUsuario === "Usuario") {
-      const name = (nameUserRef.current && nameUserRef.current.value || '').trim();
-      const surName = (lastNameUserRef.current && lastNameUserRef.current.value || '').trim();
-      const emailReg = (emailUserRef.current && emailUserRef.current.value || '').trim();
-      const passwordReg = (passUserRef.current && passUserRef.current.value || '').trim();
-
-      if (!name || !emailReg || !passwordReg) {
-        alert('Por favor completa los campos requeridos.');
-        return;
-      }
-
-      const registerData = {
-        firstName: name,
-        firstSurname: surName,
-        email: emailReg,
-        password: passwordReg,
-        type: 'user'
-      };
-
-      fetch(`${baseUrl}/registerUser`, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(registerData),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Error al registrar usuario");
-          return res.text();
-        })
-        .then((msg) => {
-          console.log("Mensaje recibido:", msg);
-          alert("Usuario registrado con éxito");
-          setRightPanelActive(false);
-
-          if (nameUserRef.current) nameUserRef.current.value = "";
-          if (lastNameUserRef.current) lastNameUserRef.current.value = "";
-          if (emailUserRef.current) emailUserRef.current.value = "";
-          if (passUserRef.current) passUserRef.current.value = "";
-        })
-        .catch((err) => {
-          console.error(err);
-          alert("Hubo un problema al registrar el usuario.");
-        });
-
-      return;
-    }
-
-    // Empresa
-    const companyName = (companyNameRef.current && companyNameRef.current.value || '').trim();
-    const companyAddress = (companyAddressRef.current && companyAddressRef.current.value || '').trim();
-    const companyPhone = (companyPhoneRef.current && companyPhoneRef.current.value || '').trim();
-    const companyEmail = (userRef.current && userRef.current.value || '').trim();
-    const companyPass = (passRef.current && passRef.current.value || '').trim();
-
-    if (!companyName || !companyEmail || !companyPass) {
-      alert('Por favor completa los campos requeridos de la empresa.');
-      return;
-    }
-
-    const companyData = {
-      companyName,
-      address: companyAddress,
-      phone: companyPhone,
-      email: companyEmail,
-      password: companyPass,
-      type: 'company'
+    const registerData = {
+      firstName: name,
+      firstSurname: surName,
+      email: emailReg,
+      password: passwordReg,
     };
 
-    fetch(`${baseUrl}/registerUser`, {
+    fetch("https://envifo-java-backend-api-rest.onrender.com/api/registerUser", {
       method: "POST",
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(companyData),
+      body: JSON.stringify(registerData),
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Error al registrar empresa");
+        if (!res.ok) throw new Error("Error al registrar usuario");
         return res.text();
       })
       .then((msg) => {
-        console.log("Empresa registrada:", msg);
-        alert("Empresa registrada con éxito");
+        console.log("Mensaje recibido:", msg);
+        alert("Usuario registrado con éxito");
         setRightPanelActive(false);
 
-        if (companyNameRef.current) companyNameRef.current.value = "";
-        if (companyAddressRef.current) companyAddressRef.current.value = "";
-        if (companyPhoneRef.current) companyPhoneRef.current.value = "";
-        if (userRef.current) userRef.current.value = "";
-        if (passRef.current) passRef.current.value = "";
+        if (nameUserRef.current) nameUserRef.current.value = "";
+        if (lastNameUserRef.current) lastNameUserRef.current.value = "";
+        if (emailUserRef.current) emailUserRef.current.value = "";
+        if (passUserRef.current) passUserRef.current.value = "";
       })
       .catch((err) => {
         console.error(err);
-        alert("Hubo un problema al registrar la empresa.");
+        alert("Hubo un problema al registrar el usuario.");
       });
   };
 
